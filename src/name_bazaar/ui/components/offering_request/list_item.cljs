@@ -7,13 +7,13 @@
     [name-bazaar.ui.components.ens-name-details :refer [ens-name-details]]
     [name-bazaar.ui.components.infinite-list :refer [expandable-list-item]]
     [name-bazaar.ui.components.misc :refer [a]]
-    [name-bazaar.ui.components.search-results.list-item-placeholder :refer [list-item-placeholder]]
+    [name-bazaar.ui.components.loading-placeholders :refer [list-item-placeholder]]
     [name-bazaar.ui.styles :as styles]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]))
 
 (defn offering-request-list-item-header []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:offering-request]}]
       (let [{:keys [:offering-request/node :offering-request/name :offering-request/requesters-count]} offering-request]
         [:div
@@ -37,7 +37,7 @@
               requesters-count (pluralize " request" requesters-count)]]])]))))
 
 (defn offering-request-list-item []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:offering-request :expanded? :on-expand :key]}]
       (let [{:keys [:offering-request/node :offering-request/name]} offering-request]
         [expandable-list-item
@@ -45,7 +45,7 @@
           :on-expand #(dispatch [:offering-requests.list-item/expanded offering-request])
           :collapsed-height (styles/search-results-list-item-height @xs?)
           :expanded-height (styles/offering-request-list-item-expanded-height @xs?)
-          :expand-disabled? (not node)}
+          :disable-expand? (not node)}
          [offering-request-list-item-header
           {:offering-request offering-request}]
          [ens-name-details

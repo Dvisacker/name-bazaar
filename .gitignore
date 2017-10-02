@@ -23,3 +23,6 @@ pom.xml.asc
 /dev-tests/
 /src/name_bazaar/server/repl.cljs
 /resources/public/css/name-bazaar.main.css.map
+/npm-debug.log
+/resources/semantic/dist/components/
+/resources/public/css/

@@ -2,8 +2,9 @@
   (:require
     [district0x.ui.components.misc :as misc :refer [row row-with-cols col paper page]]
     [medley.core :as medley]
+    [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.ens-name-details :refer [ens-name-details]]
-    [name-bazaar.ui.components.misc :refer [a side-nav-menu-center-layout]]
+    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.components.search-fields.offerings-order-by-select-field :refer [offerings-order-by-select-field]]
     [name-bazaar.ui.components.search-results.infinite-list :refer [search-results-infinite-list]]
@@ -65,7 +66,7 @@
   (let [route-params (subscribe [:district0x/route-params])]
     (fn []
       (let [{:keys [:ens.record/name]} @route-params]
-        [side-nav-menu-center-layout
+        [app-layout
          [paper
           [:h1
            {:style styles/page-headline}

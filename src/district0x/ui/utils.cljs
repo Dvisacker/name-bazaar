@@ -25,10 +25,11 @@
 (defn color-darken [& args]
   (apply js/MaterialUIUtils.colorManipulator.darken args))
 
-(defn get-window-width-size [width]
+(defn get-screen-size [width]
   (cond
+    (>= width 1920) 4
     (>= width 1200) 3
-    (>= width 1024) 2
+    (>= width 992) 2
     (>= width 768) 1
     :else 0))
 
@@ -170,13 +171,15 @@
 
 (defn format-time-duration-units [milis]
   (let [{:keys [:seconds :minutes :hours :days]} (time-duration-units milis)]
-    (reduce (fn [acc [unit amount]]
-              (if (pos? amount)
-                (str acc (format-time-duration-unit unit amount) " ")
-                acc))
-            ""
-            ;; To ensure proper order
-            [[:days days] [:hours hours] [:minutes minutes] [:seconds seconds]])))
+    ;; To ensure proper order
+    (.slice
+      (reduce (fn [acc [unit amount]]
+                (if (pos? amount)
+                  (str acc (format-time-duration-unit unit amount) " ")
+                  acc))
+              ""
+              [[:days days] [:hours hours] [:minutes minutes] [:seconds seconds]])
+      0 -1)))
 
 (defn truncate
   "Truncate a string with suffix (ellipsis by default) if it is

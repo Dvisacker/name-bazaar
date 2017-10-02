@@ -9,9 +9,10 @@
                  [cljs-react-material-ui "0.2.48"]
                  [cljs-web3 "0.19.0-0-5"]
                  [cljsjs/prop-types "15.5.10-0"]
-                 [cljsjs/react "15.6.1-1"]
-                 [cljsjs/react-dom "15.6.1-1"]
-                 [cljsjs/react-dom-server "15.6.1-1"]
+                 [cljsjs/react "15.6.1-2"]
+                 [cljsjs/react-datepicker "0.55.0-0"]
+                 [cljsjs/react-dom "15.6.1-2"]
+                 [cljsjs/react-dom-server "15.6.1-2"]
                  [cljsjs/react-infinite "0.12.1-0"]
                  [day8.re-frame/async-flow-fx "0.0.8"]
                  [day8.re-frame/forward-events-fx "0.0.5"]
@@ -22,6 +23,7 @@
                  [org.clojure/clojurescript "1.9.854"]
                  [print-foo-cljs "2.0.3"]
                  [re-frame "0.9.4" :exclusions [reagent]]
+                 [soda-ash "0.4.0"]
 
                  ;; d0xINFRA temporary here
                  [akiroz.re-frame/storage "0.1.2"]
@@ -57,7 +59,8 @@
                        [sqlite3 "3.1.8"]
                        [web3 "0.19.0"]
                        [ws "2.0.1"]
-                       [xhr2 "0.1.4"]]}
+                       [xhr2 "0.1.4"]
+                       [semantic-ui "2.2.13"]]}
 
   :min-lein-version "2.5.3"
 
@@ -65,7 +68,8 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
-  :figwheel {:server-port 4544}
+  :figwheel {:server-port 4544
+             :css-dirs ["resources/public/css"]}
 
   :auto {"compile-solidity" {:file-pattern #"\.(sol)$"
                              :paths ["resources/public/contracts/src"]}}
@@ -82,9 +86,9 @@
              {:dependencies [[org.clojure/clojure "1.8.0"]
                              [binaryage/devtools "0.9.4"]
                              [com.cemerick/piggieback "0.2.1"]
-                             [figwheel-sidecar "0.5.11"]
+                             [figwheel-sidecar "0.5.13"]
                              [org.clojure/tools.nrepl "0.2.13"]]
-              :plugins [[lein-figwheel "0.5.11"]]
+              :plugins [[lein-figwheel "0.5.13"]]
               :source-paths ["dev"]
               :resource-paths ["resources"]
               :cljsbuild {:builds [{:id "dev"

@@ -70,7 +70,8 @@
                                            {:ens.record/label label :ens.record/owner offering}
                                            {:from owner}))
 
-                  (when (= offering-type :auction-offering)
+                  (when (and (= offering-type :auction-offering)
+                             (zero? (rand-int 2)))
                     (<! (auction-offering/bid! server-state {:offering/address offering} {:value price :from buyer})))
 
                   #_ (when true #_(zero? (rand-int 2))

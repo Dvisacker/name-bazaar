@@ -1,6 +1,6 @@
 (ns district0x.ui.components.transaction-log
   (:require
-    [cljs-react-material-ui.reagent :as ui]
+    [cljs-react-material-ui.reagent :as mui]
     [district0x.shared.utils :as d0x-shared-utils]
     [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col]]
     [district0x.ui.utils :as d0x-ui-utils :refer [create-icon current-component-mui-theme]]
@@ -43,7 +43,7 @@
            {:style toggle-settings-style}
            container-props)
          (when-not @single-address?
-           [ui/toggle
+           [mui/toggle
             (r/merge-props
               {:label "Show transactions from active address only"
                :label-position "right"
@@ -114,7 +114,7 @@
 
 (defn transaction [{:keys [:transaction :last? :container-props :border-bottom-style]}]
   (let [{:keys [:hash :contract-key :contract-method :result-href :highlighted?]} transaction]
-    [ui/menu-item
+    [mui/menu-item
      (r/merge-props
        {:style (merge
                  (when highlighted?
@@ -176,9 +176,9 @@
   (let [open? (subscribe [:district0x.transaction-log/open?])]
     (fn [props & children]
       (let [[props [tx-log-title tx-log-settings tx-log-items]] (d0x-ui-utils/parse-props-children props children)]
-        [ui/icon-menu
+        [mui/icon-menu
          (r/merge-props
-           {:icon-button-element (r/as-element [ui/icon-button (bell-icon {:color "#FFF"})])
+           {:icon-button-element (r/as-element [mui/icon-button (bell-icon {:color "#FFF"})])
             :anchor-origin {:horizontal "right" :vertical "top"}
             :target-origin {:horizontal "right" :vertical "top"}
             :style icon-menu-style

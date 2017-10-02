@@ -18,7 +18,7 @@
 (defmulti page identity)
 
 (defn paper []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [props & children]
       (let [[props children] (parse-props-children props children)
             {:strs [gutter gutterXs]} (current-component-mui-theme "paper")
@@ -32,7 +32,7 @@
           children)))))
 
 (defn paper-with-loader []
-  (let [xs? (subscribe [:district0x/window-xs-width?])
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])
         connection-error? (subscribe [:district0x/blockchain-connection-error?])]
     (fn [props & children]
       (let [[{:keys [:inner-style] :as props} children] (parse-props-children props children)
@@ -106,13 +106,14 @@
        {:mui-theme mui-theme}
        (if-not @ui-disabled?
          [:div
+          {:style {:height "100%"}}
           content
           [ui/snackbar (-> @snackbar
                          (set/rename-keys {:open? :open}))]]
          [:div "UI is disabled"])])))
 
 (defn side-nav-menu []
-  (let [lg? (subscribe [:district0x/window-lg-width?])
+  (let [lg? (subscribe [:district0x.screen-size/min-large-screen?])
         drawer-open? (subscribe [:district0x/menu-drawer-open?])
         active-address (subscribe [:district0x/active-address])
         active-page (subscribe [:district0x/active-page])]
@@ -159,7 +160,7 @@
          children)])))
 
 (defn main-app-bar []
-  (let [lg? (subscribe [:district0x/window-lg-width?])]
+  (let [lg? (subscribe [:district0x.screen-size/min-large-screen?])]
     (fn [props]
       [ui/app-bar
        (r/merge-props
@@ -168,8 +169,8 @@
          props)])))
 
 (defn side-nav-menu-layout []
-  (let [lg? (subscribe [:district0x/window-lg-width?])
-        xs? (subscribe [:district0x/window-xs-width?])]
+  (let [lg? (subscribe [:district0x.screen-size/min-large-screen?])
+        xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [drawer-menu main-app-bar & children]
       (let [{:strs [desktopGutter desktopGutterLess]} (current-component-mui-theme "spacing")
             drawer-width (current-component-mui-theme "drawer" "width")]

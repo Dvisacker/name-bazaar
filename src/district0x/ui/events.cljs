@@ -23,7 +23,7 @@
     [district0x.ui.location-fx]
     [district0x.ui.spec-interceptors :refer [validate-args conform-args validate-db validate-first-arg]]
     [district0x.ui.spec]
-    [district0x.ui.utils :as d0x-ui-utils]
+    [district0x.ui.utils :as d0x-ui-utils :refer [get-screen-size]]
     [district0x.ui.window-fx]
     [goog.string :as gstring]
     [goog.string.format]
@@ -735,7 +735,7 @@
   :district0x.window/resized
   interceptors
   (fn [{:keys [db]} [width]]
-    {:db (assoc db :window-width-size (d0x-ui-utils/get-window-width-size width))}))
+    {:db (assoc db :screen-size (get-screen-size width))}))
 
 (reg-event-fx
   :district0x.window/scroll-to-top

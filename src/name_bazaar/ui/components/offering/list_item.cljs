@@ -1,11 +1,11 @@
 (ns name-bazaar.ui.components.offering.list-item
   (:require
-    [cljs-react-material-ui.reagent :as ui]
+    [cljs-react-material-ui.reagent :as mui]
     [cljs-time.core :as t]
     [clojure.string :as string]
     [district0x.shared.utils :refer [empty-address?]]
     [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col paper]]
-    [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code format-local-datetime time-ago]]
+    [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code format-local-datetime time-ago time-remaining-biggest-unit time-unit->text pluralize]]
     [name-bazaar.ui.components.add-to-watched-names-button :refer [add-to-watched-names-button]]
     [name-bazaar.ui.components.ens-record.etherscan-link :refer [ens-record-etherscan-link]]
     [name-bazaar.ui.components.infinite-list :refer [expandable-list-item]]
@@ -14,11 +14,12 @@
     [name-bazaar.ui.components.offering.chips :refer [offering-active-chip offering-sold-chip offering-bought-chip offering-auction-winning-chip offering-auction-pending-returns-chip offering-missing-ownership-chip]]
     [name-bazaar.ui.components.offering.general-info :refer [offering-general-info]]
     [name-bazaar.ui.components.offering.warnings :refer [non-ascii-characters-warning missing-ownership-warning sub-level-name-warning]]
-    [name-bazaar.ui.components.search-results.list-item-placeholder :refer [list-item-placeholder]]
+    [name-bazaar.ui.components.loading-placeholders :refer [list-item-placeholder]]
     [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [etherscan-ens-url path-for offering-type->text]]
     [re-frame.core :refer [subscribe dispatch]]
-    [reagent.core :as r]))
+    [reagent.core :as r]
+    [soda-ash.core :as ui]))
 
 (defn offering-detail-link [{:keys [:offering/address]}]
   [:div
@@ -29,7 +30,7 @@
     "Open Offering Detail"]])
 
 (defn offering-expanded-body []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:offering :hide-action-form?]}]
       (let [{:keys [:offering/address :offering/name :offering/contains-non-ascii? :offering/top-level-name?
                     :offering/original-owner]} offering
@@ -81,16 +82,14 @@
 (defn auction-time-remaining [{:keys [:auction-offering/end-time]}]
   (when end-time
     [:span
-     {:style styles/offering-list-item-time-left}
-     (if (t/after? end-time (t/now))
-       (str (d0x-ui-utils/format-time-remaining-biggest-unit end-time) " left")
-       "finished")]))
+     #_(if (t/after? end-time (t/now))
+         (str (format-time-remaining-biggest-unit end-time) " left")
+         "finished")]))
 
 (defn offering-header-price []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:offering]}]
-      [:span
-       {:style (styles/offering-list-item-price @xs?)}
+      [:span.offering-price
        (format-eth-with-code (:offering/price offering))])))
 
 (defn offering-header-active-chip [{:keys [:offering] :as props}]
@@ -125,19 +124,17 @@
     {:auction-offering/end-time (:auction-offering/end-time offering)}]])
 
 (defn offering-header-offering-type [{:keys [:offering]}]
-  [:div
-   {:style styles/offering-list-item-type}
-   (offering-type->text (:offering/type offering))])
+  (let [offering-type (:offering/type offering)]
+    [:h6.ui.sub.header.offering-type
+     {:class offering-type}
+     (offering-type->text offering-type)]))
 
 (defn offering-header-main-text [{:keys [:offering :show-created-on?]}]
   (let [{:keys [:offering/created-on :offering/name]} offering]
-    (if show-created-on?
-      [:div
-       {:style styles/list-item-ens-record-name}
-       (format-local-datetime created-on)]
-      [:div
-       {:style styles/list-item-ens-record-name}
-       name])))
+    [:div.offering-main-text
+     (if show-created-on?
+       (format-local-datetime created-on)
+       name)]))
 
 (defn offering-list-item-header-mobile [{:keys [:offering :show-created-on? :show-sold-for? :show-bought-for?
                                                 :show-finalized-on? :show-active? :show-auction-winning?
@@ -145,12 +142,70 @@
   (let [{:keys [:offering/address :offering/auction? :offering/price
                 :offering/type :offering/finalized-on :offering/new-owner :auction-offering/bid-count
                 :auction-offering/end-time]} offering]
-    [:div
-     {:style (styles/search-results-list-item true)}
-     (if-not address
-       [list-item-placeholder
-        {:xs? true}]
-       [row-with-cols
+    [:div.search-results-list-item
+     [list-item-placeholder
+      {:class "short"
+       :visible? (not address)}]
+     [:div.search-results-list-item-header
+      {:class (if address :opacity-1 :opacity-0)}
+      [:div.left-section
+       [offering-header-offering-type
+        {:offering offering}]
+       [offering-header-main-text
+        {:show-created-on? show-created-on?
+         :offering offering}]
+       [offering-header-price
+        {:offering offering}]]
+      [:div.right-section
+       {:class (if (and address
+                        (or (not auction?)
+                            (and auction? end-time bid-count)))
+                 :opacity-1
+                 :opacity-0)}
+       (when auction?
+         [:div.offering-auction-item
+          [:div.amount bid-count]
+          [:div.text "Bids"]])
+       (when auction?
+         (let [[unit amount] (time-remaining-biggest-unit (t/now) end-time)]
+           [:div.offering-auction-item.time-left
+            [:div.amount amount]
+            [:div.text (string/capitalize (str (pluralize (time-unit->text unit) amount) " left"))]]))
+       (when-not auction?
+         [:div.offering-buy-now-item
+          [ui/Button
+           "Buy Now"]])]]
+     #_[ui/Transition
+        {:class :left-section
+         :visible (boolean address)
+         :animation "scale"
+         :duration 1000}
+        [:div.left-section
+         [offering-header-offering-type
+          {:offering offering}]
+         [offering-header-main-text
+          {:show-created-on? show-created-on?
+           :offering offering}]
+         [offering-header-price
+          {:offering offering}]]]
+     #_(when address
+         [:div.right-section
+          (when (and auction? bid-count)
+            [:div.offering-auction-item
+             [:div.amount bid-count]
+             [:div.text "Bids"]])
+          (when (and auction? end-time)
+            (let [[unit amount] (time-remaining-biggest-unit (t/now) end-time)]
+              [:div.offering-auction-item.time-left
+               [:div.amount amount]
+               [:div.text (str (pluralize (time-unit->text unit) amount) " left")]]))
+          (when-not auction?
+            [:div.offering-buy-now-item
+             [ui/Button
+              "Buy Now"]])])
+
+
+     #_[row-with-cols
         {:style (merge styles/search-results-list-item-header
                        (if address styles/opacity-1 styles/opacity-0))
          :between "sm"
@@ -209,7 +264,7 @@
               :style styles/margin-left-gutter-mini}])
 
           (when show-finalized-on?
-            (time-ago finalized-on))]]])]))
+            (time-ago finalized-on))]]]]))
 
 (defn offering-list-item-header [{:keys [:offering :show-created-on? :show-sold-for? :show-bought-for? :show-finalized-on?
                                          :show-active? :show-auction-winning? :show-auction-pending-returns?
@@ -285,8 +340,8 @@
            {:offering offering}]]]])]))
 
 (defn offering-list-item []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
-    (fn [{:keys [:offering :expanded? :on-expand :key :header-props :body-props :expand-disabled? :on-click]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
+    (fn [{:keys [:offering :expanded? :on-expand :key :header-props :body-props disable-expand? :on-click]
           :as props}]
       (let [{:keys [:offering/address :offering/auction?]} offering
             xs? (if (:xs? props) true @xs?)]
@@ -298,7 +353,7 @@
           :expanded-height (if auction?
                              (styles/auction-offering-list-item-expanded-height xs?)
                              (styles/buy-now-offering-list-item-expanded-height xs?))
-          :expand-disabled? (or expand-disabled? (not address))
+          :disable-expand? (or disable-expand? (not address))
           :on-click on-click}
          (if xs?
            [offering-list-item-header-mobile

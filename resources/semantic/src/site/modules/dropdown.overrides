@@ -1,0 +1,9 @@
+/*******************************
+        User Overrides
+*******************************/
+
+.ui.dropdown, .ui.selection.dropdown {
+  border-right: none;
+  border-left: none;
+  border-top: none;
+}

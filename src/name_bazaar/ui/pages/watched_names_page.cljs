@@ -5,10 +5,11 @@
     [district0x.ui.components.text-field :refer [text-field-with-suffix]]
     [district0x.ui.utils :refer [current-component-mui-theme]]
     [medley.core :as medley]
+    [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.ens-name-details :refer [ens-name-details]]
     [name-bazaar.ui.components.icons :as icons]
     [name-bazaar.ui.components.infinite-list :refer [infinite-list expandable-list-item]]
-    [name-bazaar.ui.components.misc :refer [a side-nav-menu-center-layout]]
+    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering-request.list-item :refer [offering-request-list-item]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.components.search-results.infinite-list :refer [search-results-infinite-list]]
@@ -24,7 +25,7 @@
     (reset! new-name-atom "")))
 
 (defn add-watched-name-form []
-  (let [xs? (subscribe [:district0x/window-xs-width?])
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])
         new-name (r/atom "")]
     (fn []
       [:div
@@ -50,11 +51,11 @@
             {:color (current-component-mui-theme "paper" "color")})]]]])))
 
 (defn watch-item-placeholder []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:watched-name] :as props}]
       (let [{:keys [:ens.record/name]} watched-name]
         [expandable-list-item
-         {:expand-disabled? true
+         {:disable-expand? true
           :collapsed-height (styles/search-results-list-item-height @xs?)}
          [:div
           (r/merge-props
@@ -71,7 +72,7 @@
              name]]]]]))))
 
 (defn remove-all-button []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn []
       [row
        {:end "sm"}
@@ -84,7 +85,7 @@
         "Clear All"]])))
 
 (defn watched-names-infinite-list []
-  (let [xs? (subscribe [:district0x/window-xs-width?])
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])
         watched-items (subscribe [:watched-names/watched-items])]
     (fn []
       [:div
@@ -114,7 +115,7 @@
                 :watched-name watched-item}])))]])))
 
 (defmethod page :route/watched-names []
-  [side-nav-menu-center-layout
+  [app-layout
    [paper
     {:style styles/search-results-paper}
     [:h1

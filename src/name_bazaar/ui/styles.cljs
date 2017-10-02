@@ -15,7 +15,7 @@
 
 
 (def mui-theme (get-mui-theme {:palette palette
-                               :font-family "Open Sans, sans-serif"
+                               :font-family "filson-soft, sans-serif"
                                :app-bar {:height 56}
                                :ripple {:color primary1-color}
                                :paper {:gutter 16}
@@ -24,6 +24,7 @@
                                #_#_:paper {:background-color theme-blue
                                            :color "#FFF"}
                                #_#_:flat-button {:primary-text-color theme-blue}
+
                                #_#_:drop-down-menu {:accent-color theme-blue}
                                #_#_:menu-item {:selected-text-color theme-cyan}
                                #_#_:snackbar {:background-color "rgba(0, 0, 0, 0.95)"

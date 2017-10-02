@@ -1,14 +1,15 @@
 (ns name-bazaar.ui.pages.offerings-search-page
   (:require
-    [cljs-react-material-ui.reagent :as ui]
+    [cljs-react-material-ui.reagent :as mui]
     [clojure.string :as string]
     [district0x.shared.utils :as d0x-shared-utils :refer [non-neg-ether-value?]]
     [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col paper page]]
     [district0x.ui.components.text-field :refer [text-field ether-field integer-field ether-field-with-currency]]
     [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code]]
     [medley.core :as medley]
+    [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.icons :as icons]
-    [name-bazaar.ui.components.misc :refer [a side-nav-menu-center-layout]]
+    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.components.search-fields.keyword-position-select-field :refer [keyword-position-select-field]]
     [name-bazaar.ui.components.search-fields.keyword-text-field :refer [keyword-text-field]]
@@ -18,7 +19,8 @@
     [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [etherscan-ens-url]]
     [re-frame.core :refer [subscribe dispatch]]
-    [reagent.core :as r]))
+    [reagent.core :as r]
+    [soda-ash.core :as ui]))
 
 (defn offerings-keyword-text-field []
   (let [search-params (subscribe [:offerings.main-search/params])]
@@ -38,7 +40,7 @@
   (let [saved-searches (subscribe [:offerings/saved-searches])
         query-string (subscribe [:district0x/query-string])]
     (fn [props]
-      [ui/select-field
+      [mui/select-field
        (r/merge-props
          (merge
            {:style styles/saved-searches-select-field
@@ -49,7 +51,7 @@
              {:value @query-string}))
          props)
        (for [[query text] @saved-searches]
-         [ui/menu-item
+         [mui/menu-item
           {:key query
            :value query
            :primary-text text}])])))
@@ -57,16 +59,16 @@
 (defn save-search-dialog []
   (let [saved-search-name (r/atom "")]
     (fn [{:keys [:on-confirm :on-cancel] :as props}]
-      [ui/dialog
+      [mui/dialog
        (r/merge-props
          {:title "Save Search"
           :actions [(r/as-element
-                      [ui/flat-button
+                      [mui/flat-button
                        {:label "Cancel"
                         :secondary true
                         :on-click on-cancel}])
                     (r/as-element
-                      [ui/flat-button
+                      [mui/flat-button
                        {:label "Save"
                         :primary true
                         :disabled (empty? @saved-search-name)
@@ -98,13 +100,13 @@
                        (dispatch [:offerings.saved-searches/add @query-string saved-search-name])
                        (reset! dialog-open? false))}]
        (if @saved-search-active?
-         [ui/icon-button
+         [mui/icon-button
           (r/merge-props
             {:tooltip "Delete this saved search"
              :on-click #(dispatch [:offerings.saved-searches/remove @query-string])}
             props)
           (icons/bookmark-remove)]
-         [ui/icon-button
+         [mui/icon-button
           (r/merge-props
             {:tooltip "Save current search"
              :disabled (empty? @query-string)
@@ -117,13 +119,13 @@
     (fn [{:keys [:buy-now-checkbox-props :auction-checkbox-props]}]
       [:div
        {:style styles/full-width}
-       [ui/checkbox
+       [mui/checkbox
         (r/merge-props
           {:label "Buy Now Offerings"
            :checked (boolean (:buy-now? @search-params))
            :on-check #(dispatch [:district0x.location/add-to-query {:buy-now? %2}])}
           buy-now-checkbox-props)]
-       [ui/checkbox
+       [mui/checkbox
         (r/merge-props
           {:label "Auction Offerings"
            :checked (boolean (:auction? @search-params))
@@ -135,13 +137,13 @@
     (fn [{:keys [:top-level-checkbox-props :subname-checkbox-props]}]
       [:div
        {:style styles/full-width}
-       [ui/checkbox
+       [mui/checkbox
         (r/merge-props
           {:label "Top Level Names"
            :checked (boolean (:top-level-names? @search-params))
            :on-check #(dispatch [:district0x.location/add-to-query {:top-level-names? %2}])}
           top-level-checkbox-props)]
-       [ui/checkbox
+       [mui/checkbox
         (r/merge-props
           {:label "Subnames"
            :checked (boolean (:sub-level-names? @search-params))
@@ -153,13 +155,13 @@
     (fn [{:keys [:exclude-numbers-checkbox-props :exclude-spec-chars-checkbox-props]}]
       [:div
        {:style styles/full-width}
-       [ui/checkbox
+       [mui/checkbox
         (r/merge-props
           {:label "Exclude Numbers"
            :checked (boolean (:exclude-numbers? @search-params))
            :on-check #(dispatch [:district0x.location/add-to-query {:exclude-numbers? %2}])}
           exclude-numbers-checkbox-props)]
-       [ui/checkbox
+       [mui/checkbox
         (r/merge-props
           {:label "Exclude Special Char."
            :checked (boolean (:exclude-special-chars? @search-params))
@@ -238,7 +240,7 @@
            props)]))))
 
 (defn reset-search-icon-button []
-  [ui/icon-button
+  [mui/icon-button
    {:tooltip "Reset Search"
     :on-click #(dispatch [:district0x.location/set-query ""])}
    (icons/filter-remove)])
@@ -292,7 +294,7 @@
 (defn search-params-drawer-mobile []
   (let [open? (subscribe [:offerings.main-search.drawer/open?])]
     (fn []
-      [ui/drawer
+      [mui/drawer
        {:open-secondary true
         :open @open?
         :on-request-change #(dispatch [:offerings.search-params-drawer/set %])}
@@ -315,14 +317,14 @@
          [exclude-chars-checkbox-group]]
         [row
          {:style styles/margin-top-gutter}
-         [ui/raised-button
+         [mui/raised-button
           {:full-width true
            :primary true
            :label "Close"
            :on-click #(dispatch [:offerings.search-params-drawer/set false])}]]
         [row
          {:style styles/margin-top-gutter-less}
-         [ui/flat-button
+         [mui/flat-button
           {:full-width true
            :label "Reset"
            :on-click #(dispatch [:district0x.location/set-query ""])}]]]])))
@@ -360,10 +362,12 @@
                 :offering offering}]))]]))))
 
 (defmethod page :route.offerings/search []
-  (let [xs-sm? (subscribe [:district0x/window-xs-sm-width?])]
+  (let [xs-sm? (subscribe [:district0x.screen-size/max-tablet?])]
     (fn []
-      [side-nav-menu-center-layout
-       (if @xs-sm?
+      [app-layout
+       [ui/Segment
+        "Hello"]
+       #_ (if @xs-sm?
          [search-params-panel-mobile]
          [search-params-panel])
-       [offerings-search-results]])))
+       #_ [offerings-search-results]])))

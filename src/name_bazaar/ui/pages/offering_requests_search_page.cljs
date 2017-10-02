@@ -6,8 +6,9 @@
     [district0x.ui.components.text-field :refer [text-field]]
     [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code]]
     [medley.core :as medley]
+    [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.icons :as icons]
-    [name-bazaar.ui.components.misc :refer [a side-nav-menu-center-layout]]
+    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering-request.list-item :refer [offering-request-list-item]]
     [name-bazaar.ui.components.search-fields.keyword-position-select-field :refer [keyword-position-select-field]]
     [name-bazaar.ui.components.search-fields.keyword-text-field :refer [keyword-text-field]]
@@ -67,6 +68,6 @@
                 :offering-request offering-request}]))]]))))
 
 (defmethod page :route.offering-requests/search []
-  [side-nav-menu-center-layout
+  [app-layout
    [search-params-panel]
    [offering-requests-search-results]])

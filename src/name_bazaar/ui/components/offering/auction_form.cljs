@@ -4,7 +4,7 @@
     [district0x.shared.utils :as d0x-shared-utils :refer [empty-address?]]
     [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col page]]
     [district0x.ui.components.text-field :refer [ether-field-with-currency]]
-    [district0x.ui.components.transaction-button :refer [raised-transaction-button]]
+    [district0x.ui.components.transaction-button :refer [transaction-button]]
     [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code]]
     [name-bazaar.shared.utils :refer [calculate-min-bid]]
     [name-bazaar.ui.components.misc :refer [a]]
@@ -57,7 +57,7 @@
 
 (defn auction-form []
   (let [bid-value (r/atom nil)
-        xs? (subscribe [:district0x/window-xs-width?])]
+        xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:offering] :as props}]
       (let [{:keys [:offering/address :offering/price :auction-offering/min-bid-increase
                     :auction-offering/bid-count :offering/new-owner :auction-offering/end-time]} offering
@@ -99,12 +99,12 @@
                :floating-label-text "Your bid"
                :full-width @xs?
                :on-change #(reset! bid-value %2)}]
-             [raised-transaction-button
+             [transaction-button
               {:primary true
                :label "Bid"
                :full-width @xs?
                :pending? @(subscribe [:auction-offering.bid/tx-pending? address])
-               :pending-label "Bidding..."
+               :pending-text "Bidding..."
                :style (merge
                         (if-not @xs?
                           {:margin-bottom styles/desktop-gutter-mini

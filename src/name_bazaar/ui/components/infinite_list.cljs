@@ -1,37 +1,32 @@
 (ns name-bazaar.ui.components.infinite-list
   (:require
-    [react-infinite]
+    [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col]]
     [medley.core :as medley]
     [re-frame.core :refer [subscribe dispatch]]
-    [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col]]
-    [reagent.core :as r]))
+    [react-infinite]
+    [reagent.core :as r]
+    [soda-ash.core :as ui]))
 
 (def react-infinite (r/adapt-react-class js/Infinite))
-(def expandable-item-style {:width "100%" :border-bottom "0.5px solid #ddd"})
-(def expandable-item-header-style {:width "100%" :cursor :pointer})
-(def expandable-item-body-style {:overflow :hidden :transition "height 0.15s cubic-bezier(0.77, 0, 0.175, 1)"})
 
 (defn expandable-list-item-body [{:keys [:index :collapsed-height] :as props} & children]
   (into
-    [:div
-     {:style (merge expandable-item-body-style
-                    {:height @(subscribe [:infinite-list.item/expanded-body-height index collapsed-height])})}]
+    [:div.body
+     {:style {:height @(subscribe [:infinite-list.item/expanded-body-height index collapsed-height])}}]
     (when @(subscribe [:infinite-list.item/expanded? index]) ;; This is important for performance reasons
       children)))
 
 (defn expandable-list-item-header []
-  (fn [{:keys [:index :expanded-height :collapsed-height :on-collapse :on-expand :expand-disabled? :on-click] :as props}
+  (fn [{:keys [:index :expanded-height :collapsed-height :on-collapse :on-expand disable-expand? :on-click] :as props}
        & children]
     (let [expanded? @(subscribe [:infinite-list.item/expanded? index])]
       (into
-        [row
-         {:middle "xs"
-          :style (merge expandable-item-header-style
-                        {:height collapsed-height})
+        [:div.header
+         {:style {:height collapsed-height}
           :on-click (fn []
                       (when (fn? on-click)
                         (on-click index))
-                      (when-not expand-disabled?
+                      (when-not disable-expand?
                         (if expanded?
                           (do
                             (when (fn? on-collapse)
@@ -43,21 +38,20 @@
                             (dispatch [:infinite-list.item/expand index expanded-height])))))}]
         children))))
 
-(defn expandable-list-item [{:keys [:index :on-collapse :on-expand :expanded-height :collapsed-height :expand-disabled?
+(defn expandable-list-item [{:keys [:index :on-collapse :on-expand :expanded-height :collapsed-height :disable-expand?
                                     :on-click]}
                             header body]
-  [:div
-   {:style expandable-item-style}
+  [:div.expandable-list-item
    [expandable-list-item-header
     {:index index
      :expanded-height expanded-height
      :on-collapse on-collapse
      :on-expand on-expand
-     :expand-disabled? expand-disabled?
+     :disable-expand? disable-expand?
      :collapsed-height collapsed-height
      :on-click on-click}
     header]
-   (when-not expand-disabled?
+   (when-not disable-expand?
      [expandable-list-item-body
       {:index index
        :collapsed-height collapsed-height}

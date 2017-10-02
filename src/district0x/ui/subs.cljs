@@ -114,29 +114,39 @@
     (:snackbar db)))
 
 (reg-sub
-  :district0x/window-width-size
+  :district0x/screen-size
   (fn [db]
-    (:window-width-size db)))
+    (:screen-size db)))
 
 (reg-sub
-  :district0x/window-lg-width?
-  (fn [db]
-    (= (:window-width-size db) 3)))
+  :district0x.screen-size/min-large-screen?
+  :<- [:district0x/screen-size]
+  (fn [screen-size]
+    (>= screen-size 3)))
 
 (reg-sub
-  :district0x/window-md-lg-width?
-  (fn [db]
-    (>= (:window-width-size db) 2)))
+  :district0x.screen-size/min-computer-screen?
+  :<- [:district0x/screen-size]
+  (fn [screen-size]
+    (>= screen-size 2)))
 
 (reg-sub
-  :district0x/window-xs-width?
-  (fn [db]
-    (= (:window-width-size db) 0)))
+  :district0x.screen-size/min-computer?
+  :<- [:district0x/screen-size]
+  (fn [screen-size]
+    (>= screen-size 2)))
 
 (reg-sub
-  :district0x/window-xs-sm-width?
-  (fn [db]
-    (<= (:window-width-size db) 1)))
+  :district0x.screen-size/mobile?
+  :<- [:district0x/screen-size]
+  (fn [screen-size]
+    (= screen-size 0)))
+
+(reg-sub
+  :district0x.screen-size/max-tablet?
+  :<- [:district0x/screen-size]
+  (fn [screen-size]
+    (<= screen-size 1)))
 
 (reg-sub
   :district0x/ui-disabled?

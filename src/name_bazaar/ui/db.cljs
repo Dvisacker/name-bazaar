@@ -24,8 +24,8 @@
 (def default-db
   (merge
     district0x.ui.db/default-db
-    ;development-config
-    production-config
+    development-config
+    ;production-config
     {:active-page (d0x-ui-utils/match-current-location constants/routes)
      :smart-contracts smart-contracts
      :now (t/now)
@@ -40,9 +40,9 @@
 
      :search-results
      {:offerings {:home-page-autocomplete {:ids []}
-                  :home-page-newest {:ids []}
-                  :home-page-most-active {:ids []}
-                  :home-page-ending-soon {:ids []}
+                  :home-page-newest {:ids [] :loading? true}
+                  :home-page-most-active {:ids [] :loading? true}
+                  :home-page-ending-soon {:ids [] :loading? true}
                   :main-search {:ids []
                                 :params {:name-position :any
                                          :buy-now? true

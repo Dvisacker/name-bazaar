@@ -10,7 +10,7 @@
         :as props}]
     (let [balance @(subscribe [:district0x/active-address-balance token])]
       (when balance
-        [:div
+        [:div.active-address-balance
          (dissoc props :token :token-name :max-fraction-digits)
          (d0x-ui-utils/to-locale-string balance max-fraction-digits)
          " "

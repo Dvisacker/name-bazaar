@@ -222,20 +222,31 @@
   :<- [:offerings/search-results :user-offerings]
   identity)
 
+
+
 (reg-sub
   :offerings/home-page-newest
   :<- [:offerings/search-results :home-page-newest]
-  identity)
+  (fn [{:keys [:loading? :items] :as search-results}]
+    (if loading?
+      (assoc search-results :items (range 5))
+      search-results)))
 
 (reg-sub
   :offerings/home-page-most-active
   :<- [:offerings/search-results :home-page-most-active]
-  identity)
+  (fn [{:keys [:loading? :items] :as search-results}]
+    (if loading?
+      (assoc search-results :items (range 5))
+      search-results)))
 
 (reg-sub
   :offerings/home-page-ending-soon
   :<- [:offerings/search-results :home-page-ending-soon]
-  identity)
+  (fn [{:keys [:loading? :items] :as search-results}]
+    (if loading?
+      (assoc search-results :items (range 5))
+      search-results)))
 
 (reg-sub
   :buy-now-offering.buy/tx-pending?

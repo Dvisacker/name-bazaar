@@ -2,14 +2,14 @@
   (:require
     [medley.core :as medley]
     [name-bazaar.ui.components.infinite-list :refer [infinite-list]]
-    [name-bazaar.ui.components.search-results.list-item-placeholder :refer [list-item-placeholder]]
+    [name-bazaar.ui.components.loading-placeholders :refer [list-item-placeholder]]
     [name-bazaar.ui.constants :as constants]
     [name-bazaar.ui.styles :as styles]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]))
 
 (defn search-results-infinite-list []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:no-items-text] :as props} list-items]
       [infinite-list
        (r/merge-props

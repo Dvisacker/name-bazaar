@@ -2,17 +2,18 @@
   (:require
     [district0x.ui.components.misc :as misc :refer [row row-with-cols col paper page]]
     [district0x.ui.components.text-field :refer [text-field]]
-    [district0x.ui.components.transaction-button :refer [raised-transaction-button]]
+    [district0x.ui.components.transaction-button :refer [transaction-button]]
     [district0x.ui.utils :refer [valid-email?]]
     [medley.core :as medley]
-    [name-bazaar.ui.components.misc :refer [a side-nav-menu-center-layout]]
+    [name-bazaar.ui.components.app-layout :refer [app-layout]]
+    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.styles :as styles]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]))
 
 (defn email-notifications-form []
   (let [active-address (subscribe [:district0x/active-address])
-        xs? (subscribe [:district0x/window-xs-width?])
+        xs? (subscribe [:district0x.screen-size/mobile?])
         email-value (r/atom "")
         active-address-has-email? (subscribe [:district0x-emails/active-address-has-email?])]
     (fn []
@@ -37,12 +38,12 @@
          [row
           {:end "xs"
            :style styles/margin-top-gutter-more}
-          [raised-transaction-button
+          [transaction-button
            {:primary true
             :label "Save"
             :full-width @xs?
             :pending? @(subscribe [:district0x-emails.set-email/tx-pending? @active-address])
-            :pending-label "Saving..."
+            :pending-text "Saving..."
             :disabled (or (empty? @email-value)
                           (not valid?))
             :on-click (fn []
@@ -51,7 +52,7 @@
                                    {:on-tx-receipt [:district0x.snackbar/show-message "Your email was successfully updated"]}]))}]]]))))
 
 (defmethod page :route.user/my-settings []
-  [side-nav-menu-center-layout
+  [app-layout
    [paper
     [:h1
      {:style (merge styles/page-headline styles/margin-bottom-gutter)}

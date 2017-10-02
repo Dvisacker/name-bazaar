@@ -1,0 +1,6 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+@celledBorderColor: fade(@lightBrown, 15);
+@borderColor: @celledBorderColor;

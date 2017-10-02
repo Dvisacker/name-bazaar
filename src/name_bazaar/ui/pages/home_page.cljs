@@ -1,18 +1,19 @@
 (ns name-bazaar.ui.pages.home-page
   (:require
-    [cljs-react-material-ui.reagent :as ui]
+    [cljs-react-material-ui.reagent :as mui]
     [clojure.string :as string]
     [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col center-layout paper page]]
-    [district0x.ui.utils :as d0x-ui-utils]
+    [district0x.ui.utils :refer [format-eth-with-code path-for]]
+    [medley.core :as medley]
     [name-bazaar.ui.components.icons :as icons]
-    [name-bazaar.ui.components.misc :as misc]
+    [name-bazaar.ui.components.misc :as misc :refer [a]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.constants :as constants]
     [name-bazaar.ui.styles :as styles]
-    [name-bazaar.ui.utils :refer [ensure-registrar-root offerings-newest-url offerings-most-active-url offerings-ending-soon-url]]
+    [name-bazaar.ui.utils :refer [ensure-registrar-root offerings-newest-url offerings-most-active-url offerings-ending-soon-url valid-ens-name?]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]
-    [medley.core :as medley]))
+    [soda-ash.core :as ui]))
 
 (defn- nav-to-ens-record-detail [name]
   (when-not (empty? name)
@@ -20,148 +21,155 @@
                {:ens.record/name (ensure-registrar-root name)}
                constants/routes])))
 
+(defn transform-search-results [items]
+  (->> items
+    (map (fn [{:keys [:offering/name :offering/price :offering/address] :as offering}]
+           (when (and name price)
+             {:title name :price (format-eth-with-code price) :id address})))
+    (remove nil?)))
 
-(defn autocomplete-search-bar []
+(defn search-bar []
   (let [search-name (r/atom "")
         search-results (subscribe [:offerings/home-page-autocomplete])]
     (fn []
-      (let [{:keys [:items]} @search-results]
-        ;; Styling teporary here until we decide on design
-        [paper
-         {:style {:width "100%"
-                  :height 48
-                  :display :flex
-                  :justifyContent "space-between"
-                  :padding 0
-                  :margin-bottom 0}}
-         [:div
-          {:style (merge styles/full-width
-                         styles/margin-left-gutter-less)}
-          [ui/auto-complete
-           {:dataSource (d0x-ui-utils/map->data-source items :offering/address :offering/name)
-            :dataSourceConfig d0x-ui-utils/default-data-source-config
-            :full-width true
-            :underline-show false
-            :hint-text "Enter Keyword"
-            :search-text @search-name
-            :on-new-request (fn [value]
-                              (let [value (js->clj value :keywordize-keys true)]
-                                (cond
-                                  (string? value)
-                                  (nav-to-ens-record-detail value)
+      (let [{:keys [:items :loading?]} @search-results]
+        [ui/Search
+         {:class "keyword-search"
+          :value @search-name
+          :show-no-results false
+          :loading loading?
+          :results (transform-search-results items)
+          :icon (r/as-element [:div.icon.search
+                               {:on-click #(nav-to-ens-record-detail @search-name)}
+                               ""])
+          :on-key-press (fn [e]
+                          (when (= (aget e "key") "Enter")
+                            (nav-to-ens-record-detail @search-name)))
+          :on-result-select (fn [_ data]
+                              (dispatch [:district0x.location/nav-to
+                                         :route.offerings/detail
+                                         {:offering/address (aget data "result" "id")}
+                                         constants/routes]))
+          :on-search-change (fn [_ data]
+                              (let [value (aget data "value")]
+                                (when (valid-ens-name? value)
+                                  (reset! search-name value)
+                                  (dispatch [:offerings.home-page-autocomplete/search {:name @search-name}]))))}]))))
 
-                                  (map? value)
-                                  (dispatch [:district0x.location/nav-to
-                                             :route.offerings/detail
-                                             {:offering/address (:value value)}
-                                             constants/routes]))))
-            :on-update-input (fn [value]
-                               (reset! search-name value)
-                               (when (>= (count value) 3)
-                                 (dispatch [:offerings.home-page-autocomplete/search {:name @search-name}])))}]]
-         [ui/icon-button
-          {:style {:opacity 0.54}
-           :on-click #(nav-to-ens-record-detail @search-name)}
-          (icons/magnify)]]))))
+(defn offerings-column [{:keys [:title :offerings :show-more-href]}]
+  [ui/Segment
+   [:div.title-container
+    [:div.title title]]
+   (doall
+     (for [[i offering] (medley/indexed offerings)]
+       [offering-list-item
+        {:key i
+         :offering offering
+         :disable-expand? true
+         :xs? true
+         :on-click #(dispatch [:district0x.location/nav-to :route.offerings/detail offering constants/routes])}]))
+   [:div
+    [:a.show-more
+     {:href show-more-href}
+     "Show more"]]])
 
-(defn info-box []
-  [col
-   {:xs 12 :sm 6 :md 4
-    :style (merge styles/margin-bottom-gutter
-                  styles/text-left)}
-   [:div "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum condimentum nunc justo,
-    eu viverra leo venenatis malesuada. Proin non metus turpis. Curabitur non nisi est."]])
-
-(defn info-boxes []
-  [row-with-cols
-   {:style (merge styles/margin-top-gutter
-                  {:font-size "1.15em"})
-    :center "xs"}
-   [info-box]
-   [info-box]
-   [info-box]])
-
-(defn offering-box [{:keys [:title :offerings :show-more-href]}]
-  [col
-   {:xs 12 :sm 6 :md 4
-    :style (merge styles/margin-bottom-gutter
-                  styles/text-left)}
-   [paper
-    {:style styles/home-page-offerings-paper}
-    [:h2
-     {:style (merge styles/margin-bottom-gutter-less
-                    styles/margin-left-gutter-mini)}
-     title]
-    (doall
-      (for [[i offering] (medley/indexed offerings)]
-        [offering-list-item
-         {:key i
-          :offering offering
-          :expand-disabled? true
-          :xs? true
-          :on-click #(dispatch [:district0x.location/nav-to :route.offerings/detail offering constants/routes])}]))
-    [:div
-     {:style (merge styles/text-right
-                    styles/margin-right-gutter-mini
-                    styles/margin-top-gutter-mini)}
-     [:a
-      {:style styles/text-decor-none
-       :href show-more-href}
-      "Show more"]]]])
-
-(defn offering-boxes []
+(defn offerings-columns []
   (let [offerings-newest (subscribe [:offerings/home-page-newest])
         offerings-most-active (subscribe [:offerings/home-page-most-active])
         offerings-ending-soon (subscribe [:offerings/home-page-ending-soon])]
     (fn []
-      [row-with-cols
-       {:style (merge styles/margin-top-gutter styles/full-width)
-        :center "xs"}
-       [offering-box
-        {:title "Latest"
-         :offerings (:items @offerings-newest)
-         :show-more-href offerings-newest-url}]
-       [offering-box
-        {:title "Most Active"
-         :offerings (:items @offerings-most-active)
-         :show-more-href offerings-most-active-url}]
-       [offering-box
-        {:title "Ending Soon"
-         :offerings (:items @offerings-ending-soon)
-         :show-more-href offerings-ending-soon-url}]])))
+      [ui/Grid
+       {:class :offerings-grid
+        :columns 3
+        :centered true}
+       (for [props [{:title "Latest"
+                     :offerings (:items @offerings-newest)
+                     :show-more-href offerings-newest-url}
+                    {:title "Most Active"
+                     :offerings (:items @offerings-most-active)
+                     :show-more-href offerings-most-active-url}
+                    {:title "Ending Soon"
+                     :offerings (:items @offerings-ending-soon)
+                     :show-more-href offerings-ending-soon-url}]]
+         [ui/GridColumn
+          {:key (:title props)
+           :widescreen 3
+           :large-screen 4
+           :computer 5
+           :tablet 8
+           :mobile 16
+           :text-align "center"
+           :class :offering-column}
+          [offerings-column props]])])))
+
+(defn namebazaar-logo []
+  [a
+   {:route :route/home}
+   [:img.logo
+    {:src "./images/logo@2x.png"}]])
+
+(defn app-pages []
+  [ui/Grid
+   {:columns 1
+    :centered true
+    :class :app-page-link-grid}
+   [ui/GridColumn
+    {:widescreen 3
+     :large-screen 5
+     :computer 6
+     :tablet 7
+     :mobile 16
+     :text-align "center"}
+    [:a.ui.button.app-page-button-link
+     {:href (path-for {:route :route.offerings/search :routes constants/routes})}
+     "View Offerings"
+     [:span.button-icon.view-offerings]]
+    [:a.ui.button.app-page-button-link
+     {:href (path-for {:route :route.offerings/create :routes constants/routes})}
+     "Create Offering"
+     [:span.button-icon.create-offering]]]])
+
+(defn app-headline []
+  [ui/Grid
+   {:columns 1
+    :centered true}
+   [ui/GridColumn
+    {:computer 7
+     :tablet 12
+     :mobile 15
+     :text-align :center}
+    [:h1.intro-headline
+     "A peer-to-peer marketplace for the exchange of names registered via the Ethereum Name Service."]]])
+
+(defn footer []
+  [ui/Grid
+   {:text-align :center
+    :class :footer
+    :vertical-align :middle}
+   [:span.footer-logo]
+   [:h3.part-of-district0x
+    "Part of the "
+    [:a {:href "https://district0x.io" :target :_blank}
+     "district0x Network"]]])
 
 (defmethod page :route/home []
-  (let [xs-sm? (subscribe [:district0x/window-xs-sm-width?])]
+  (let [xs-sm? (subscribe [:district0x.screen-size/max-tablet?])]
     (fn []
-      [row-with-cols {:center "xs"}
-       [col {:xs 12 :md 11 :lg 10 :style styles/text-left}
-        [row
-         {:style (merge {:padding-top 100}
-                        (when @xs-sm?
-                          {:padding-left styles/desktop-gutter-less
-                           :padding-right styles/desktop-gutter-less}))}
-         [:h1
-          ;; Styling teporary here until we decide on design
-          {:style (merge styles/text-center
-                         styles/full-width
-                         styles/margin-bottom-gutter
-                         {:font-size "5em"
-                          :font-weight 300})}
-          "Name Bazaar"]
-         [:h1
-          {:style (merge styles/text-center
-                         styles/margin-bottom-gutter)}
-          "A peer-to-peer marketplace for the exchange of names registered via the Ethereum Name Service."]
-         [autocomplete-search-bar]
-         [row-with-cols
-          {:end "xs"
-           :style (merge styles/margin-top-gutter-less
-                         styles/full-width)}
-          [col
-           {:xs 12}
-           [misc/a {:route :route.offerings/search} "View Offerings"]]
-          [col
-           {:xs 12}
-           [misc/a {:route :route.offerings/create} "Create new offering"]]]
-         [info-boxes]
-         [offering-boxes]]]])))
+      [:div.home-page
+       [:div.top-segment
+        [namebazaar-logo]]
+       [app-headline]
+       [ui/Grid
+        {:columns 1
+         :centered true}
+        [ui/GridColumn
+         {:widescreen 8
+          :large-screen 11
+          :computer 12
+          :tablet 12
+          :mobile 15
+          :text-align :center}
+         [search-bar]]]
+       [app-pages]
+       [offerings-columns]
+       [footer]])))

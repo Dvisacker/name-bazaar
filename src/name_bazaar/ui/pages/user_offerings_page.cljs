@@ -4,7 +4,8 @@
     [district0x.ui.components.misc :as misc :refer [row row-with-cols col center-layout paper page]]
     [district0x.ui.utils :refer [truncate]]
     [medley.core :as medley]
-    [name-bazaar.ui.components.misc :refer [a side-nav-menu-center-layout]]
+    [name-bazaar.ui.components.app-layout :refer [app-layout]]
+    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.components.search-fields.offerings-order-by-select-field :refer [offerings-order-by-select-field]]
     [name-bazaar.ui.components.search-results.infinite-list :refer [search-results-infinite-list]]
@@ -12,7 +13,7 @@
     [re-frame.core :refer [subscribe dispatch]]))
 
 (defn user-offerings-order-by-select-field []
-  (let [xs? (subscribe [:district0x/window-xs-width?])
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])
         search-results (subscribe [:offerings/user-offerings])]
     (fn []
       (let [{:keys [:params]} @search-results]
@@ -48,7 +49,7 @@
   (let [search-results (subscribe [:offerings/user-offerings])]
     (fn [{:keys [:title :no-items-text]}]
       (let [{:keys [:items :loading? :params :total-count]} @search-results]
-        [side-nav-menu-center-layout
+        [app-layout
          [paper
           {:style styles/search-results-paper}
           [:h1

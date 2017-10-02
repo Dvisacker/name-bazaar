@@ -36,7 +36,7 @@
      "winning")])
 
 (defn offering-auction-pending-returns-chip [props]
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn []
       [small-chip
        (r/merge-props

@@ -1,9 +1,8 @@
 (ns name-bazaar.ui.components.offering.general-info
   (:require
-    [cljs-react-material-ui.reagent :as ui]
     [clojure.string :as string]
     [district0x.shared.utils :as d0x-shared-utils :refer [epoch->long empty-address?]]
-    [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col paper page]]
+    [district0x.ui.components.misc :refer [etherscan-link]]
     [district0x.ui.components.text-field :refer [ether-field-with-currency]]
     [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code format-time-duration-units format-local-datetime time-ago]]
     [name-bazaar.ui.components.misc :refer [a]]
@@ -34,13 +33,13 @@
 (defn offering-address-line [{:keys [:offering/address]}]
   [:div
    {:style styles/text-overflow-ellipsis}
-   "Offering Address: " [d0x-misc/etherscan-link {:address address} address]])
+   "Offering Address: " [etherscan-link {:address address} address]])
 
 
 (defn registrar-entry-deed-value-line [{:keys [:registrar-entry]}]
   (let [{:keys [:registrar.entry.deed/address :registrar.entry.deed/value]} registrar-entry]
     [:div
-     "Locked Value: " [d0x-misc/etherscan-link
+     "Locked Value: " [etherscan-link
                        {:address address}
                        (format-eth-with-code value)]]))
 
@@ -88,7 +87,7 @@
                 :auction-offering/min-bid-increase :auction-offering/extension-duration
                 :auction-offering/winning-bidder]} offering
         registrar-entry @(subscribe [:offering/registrar-entry address])]
-    [:div
+    [:div.offering-general-info
      (dissoc props :offering)
      [offering-name-line
       {:offering/name name}]

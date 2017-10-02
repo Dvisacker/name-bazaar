@@ -2,7 +2,7 @@
   (:require
     [cljs-react-material-ui.reagent :as ui]
     [clojure.set :as set]
-    [district0x.ui.components.active-address-select-field :refer [active-address-select-field]]
+    [district0x.ui.components.active-address-select :refer [active-address-select]]
     [district0x.ui.components.misc :as misc :refer [row row-with-cols col center-layout paper page]]
     [medley.core :as medley]
     [name-bazaar.ui.constants :as constants]

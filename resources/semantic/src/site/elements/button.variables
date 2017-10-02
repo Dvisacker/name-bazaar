@@ -1,0 +1,8 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+@borderRadius: 99px;
+@fontWeight: 400;
+@invertedTextColor: @textColor;
+@medium: @small;

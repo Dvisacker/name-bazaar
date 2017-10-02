@@ -247,7 +247,7 @@
 (reg-event-fx
   :offerings/load
   [interceptors (conform-args (s/cat :opts (s/? map?) :offering-addresses sequential? :rest (s/* any?)))]
-  (fn [{:keys [:db]} [{:keys [:opts :offering-addresses]}]]
+  (fn [{:keys [:db]} [{:keys [:opts :offering-addresses] :as a}]]
     {:web3-fx.contract/constant-fns
      {:fns (for [offering-address offering-addresses]
              {:instance (get-instance db :buy-now-offering offering-address)

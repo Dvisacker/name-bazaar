@@ -5,7 +5,8 @@
     [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [ensure-registrar-root valid-ens-name? normalize]]
     [re-frame.core :refer [subscribe dispatch]]
-    [reagent.core :as r]))
+    [reagent.core :as r]
+    [soda-ash.core :as ui]))
 
 (defn- nav-to-ens-record-detail [name]
   (when-not (empty? name)
@@ -16,20 +17,10 @@
 (defn app-bar-search []
   (let [searched-name (r/atom "")]
     (fn [props]
-      [:div.app-bar-search-wrapper
-       (r/merge-props
-         {:style styles/app-bar-search-wrapper}
-         props)
-       [:div
-        {:style styles/app-bar-search-icon
-         :on-click (fn []
-                     (nav-to-ens-record-detail @searched-name)
-                     (reset! searched-name ""))}
-        (icons/magnify
-          {:color "#FFF"})]
-       [:input
-        {:style styles/app-bar-search-input
-         :value @searched-name
+      [:div.app-bar-search-container
+       props
+       [ui/Input
+        {:value @searched-name
          :on-key-press (fn [e]
                          (when (= (aget e "key") "Enter")
                            (nav-to-ens-record-detail @searched-name)
@@ -37,4 +28,8 @@
          :on-change (fn [e]
                       (let [value (aget e "target" "value")]
                         (when (valid-ens-name? value)
-                          (reset! searched-name value))))}]])))
+                          (reset! searched-name value))))}]
+       [:i.app-bar-search-icon
+        {:on-click (fn []
+                     (nav-to-ens-record-detail @searched-name)
+                     (reset! searched-name ""))}]])))

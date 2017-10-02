@@ -3,7 +3,7 @@
     [cljs-react-material-ui.reagent :as ui]
     [clojure.string :as string]
     [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col]]
-    [district0x.ui.components.transaction-button :refer [raised-transaction-button]]
+    [district0x.ui.components.transaction-button :refer [transaction-button]]
     [name-bazaar.shared.utils :refer [top-level-name?]]
     [name-bazaar.ui.components.add-to-watched-names-button :refer [add-to-watched-names-button]]
     [name-bazaar.ui.components.ens-record.etherscan-link :refer [ens-record-etherscan-link]]
@@ -16,15 +16,15 @@
     [reagent.core :as r]))
 
 (defn add-request-button []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:ens.record/name]}]
       (let [has-requested? @(subscribe [:offering-request/active-address-has-requested? (namehash name)])
             tx-pending? @(subscribe [:offering-requests.add-request/tx-pending? name])]
-        [raised-transaction-button
+        [transaction-button
          {:primary true
           :label (if has-requested? "Requested" "Request")
           :pending? tx-pending?
-          :pending-label "Requesting..."
+          :pending-text "Requesting..."
           :disabled has-requested?
           :full-width @xs?
           :on-click #(dispatch [:offering-requests/add-request {:ens.record/name name}])}]))))
@@ -38,7 +38,7 @@
     "Open Name Detail"]])
 
 (defn ens-name-details []
-  (let [xs? (subscribe [:district0x/window-xs-width?])]
+  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:ens.record/name :show-name-detail-link?] :as props}]
       [row-with-cols
        (r/merge-props

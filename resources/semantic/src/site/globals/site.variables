@@ -1,0 +1,46 @@
+/*******************************
+     User Global Variables
+*******************************/
+
+@brown: #2e1f37;
+@green: #65e70e;
+@lightGreen: #66fa03;
+@darkGreen: darken(@green, 5);
+@pink: #ff0090;
+@purple: #9d0adb;
+@lightBrown: #74647e;
+@blue: #7d96c3;
+@darkBlue: fade(#47608e, 87);
+@lightBlue: #3d5afe;
+@grey: #b2bacb;
+
+@negativeColor: @pink;
+@negativeBackgroundColor: transparent;
+@negativeTextColor: @negativeColor;
+@negativeBorderColor: @negativeColor;
+
+@positiveColor: @darkGreen;
+
+@bodyBackground: #f8f9fe;
+@textColor: fade(@brown, 87);
+@primaryColor: @lightGreen;
+@fontName: 'proxima-nova';
+@headerFont: 'filson-soft';
+@secondaryHeaderFont: 'proxima-nova-extra-condensed', sans-serif;
+
+@brownBackground: @brown;
+@headerFontWeight: 300;
+@minAppHeight: 1200px;
+@sidenavWidth: 190px;
+@segmentGutter: 30px;
+@segmentBorderRadius: 10px;
+@h1: 22px;
+@h5: 12px;
+@h6: 9px;
+@headerBottomMargin: 25px;
+//@solidInternalBorderColor: fade(@lightBrown, 15);
+@borderColor: lighten(@lightBrown, 15);
+@focusedFormMutedBorderColor: @borderColor;
+@inputBorderColor: fade(@lightBrown, 30);
+@inputBorder: 1px solid @inputBorderColor;
+@focusedFormBorderColor: @brown;

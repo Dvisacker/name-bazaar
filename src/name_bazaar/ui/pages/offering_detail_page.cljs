@@ -1,25 +1,27 @@
 (ns name-bazaar.ui.pages.offering-detail-page
   (:require
-    [cljs-react-material-ui.reagent :as ui]
+    [cljs-react-material-ui.reagent :as mui]
     [cljs-time.coerce :as time-coerce :refer [to-epoch to-date]]
     [cljs-time.core :as t]
     [district0x.ui.components.misc :as misc :refer [row row-with-cols col paper page]]
-    [district0x.ui.components.transaction-button :refer [raised-transaction-button]]
-    [district0x.ui.utils :as d0x-ui-utils :refer [to-locale-string time-unit->text]]
+    [district0x.ui.components.transaction-button :refer [transaction-button]]
+    [district0x.ui.utils :refer [to-locale-string time-unit->text pluralize]]
     [name-bazaar.shared.utils :refer [name-level]]
-    [name-bazaar.ui.components.misc :refer [a side-nav-menu-center-layout]]
+    [name-bazaar.ui.components.app-layout :refer [app-layout]]
+    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering.action-form :refer [action-form]]
     [name-bazaar.ui.components.offering.general-info :refer [offering-general-info]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.components.offering.warnings :refer [non-ascii-characters-warning missing-ownership-warning sub-level-name-warning]]
     [name-bazaar.ui.components.search-results.infinite-list :refer [search-results-infinite-list]]
-    [name-bazaar.ui.components.search-results.list-item-placeholder :refer [list-item-placeholder]]
+    [name-bazaar.ui.components.loading-placeholders :refer [content-placeholder]]
     [name-bazaar.ui.constants :as constants]
     [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [namehash sha3 strip-eth-suffix offering-type->text]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]
-    [medley.core :as medley]))
+    [medley.core :as medley]
+    [soda-ash.core :as ui]))
 
 (def offering-status->text
   {:offering.status/emergency "Emergency Cancel"
@@ -32,117 +34,35 @@
   (let [route-params (subscribe [:district0x/route-params])]
     (fn [props]
       (let [status @(subscribe [:offering/status (:offering/address @route-params)])]
-        [ui/chip
-         (r/merge-props
-           {:background-color (styles/offering-status-chip-color status)
-            :label-color styles/offering-detail-chip-label-color
-            :label-style styles/offering-detail-chip-label}
-           props)
+        [:div.offering-chip.offering-status
+         {:class (name status)}
          (offering-status->text status)]))))
 
 (defn offering-type-chip []
   (let [offering (subscribe [:offerings/route-offering])]
     (fn [props]
       (let [{:keys [:offering/auction? :offering/type]} @offering]
-        [ui/chip
-         (r/merge-props
-           {:background-color (if auction?
-                                styles/offering-auction-chip-color
-                                styles/offering-buy-now-chip-color)
-            :label-color styles/offering-detail-chip-label-color
-            :label-style styles/offering-detail-chip-label}
-           props)
+        [:div.offering-chip.offering-type
+         {:class type}
          (offering-type->text type)]))))
 
-(defn offering-price-row []
+(defn auction-offering-countdown []
   (let [offering (subscribe [:offerings/route-offering])]
     (fn [props]
-      (let [{:keys [:offering/buy-now? :offering/price :auction-offering/bid-count]} @offering]
-        [row-with-cols
-         (r/merge-props
-           {:center "xs"}
-           props)
-         [col
-          {:xs 12
-           :style styles/offering-detail-center-headline}
-          (cond
-            buy-now? "price"
-            (pos? bid-count) "higest bid"
-            :else "starting price")]
-         [col
-          {:xs 12
-           :style styles/offering-detail-center-value}
-          (to-locale-string price 3) " ETH"]]))))
-
-(defn end-time-countdown-unit [{:keys [:amount :unit]}]
-  [:span
-   [:span
-    {:style styles/offering-detail-center-value}
-    " "
-    (when (and (not= unit :days) (< amount 10))
-      0)
-    amount " "]
-   [:span
-    {:style (merge styles/offering-detail-countdown-unit)}
-    (d0x-ui-utils/pluralize (time-unit->text unit) amount)]])
-
-(defn auction-offering-end-time-countdown-row []
-  (let [xs? (subscribe [:district0x/window-xs-width?])
-        offering (subscribe [:offerings/route-offering])]
-    (fn [props]
-      (let [{:keys [:offering/address :offering/auction?]} @offering
-            {:keys [:days :hours :minutes :seconds] :as time-remaining}
-            @(subscribe [:auction-offering/end-time-countdown address])]
-        (when auction?
-          [row-with-cols
-           (r/merge-props
-             {:center "xs"}
-             props)
-           [col
-            {:xs 12
-             :style styles/offering-detail-center-headline}
-            "time remaining"]
-           [col
-            {:xs 12}
-            (when (pos? days)
-              [end-time-countdown-unit
-               {:unit :days
-                :amount days}])
-            (when (or (pos? days) (pos? hours))
-              [end-time-countdown-unit
-               {:unit :hours
-                :amount hours}])
-            (when @xs? [:br])
-            (when (or (pos? days) (pos? hours) (pos? minutes))
-              [end-time-countdown-unit
-               {:unit :minutes
-                :amount minutes}])
-            (when (or (pos? days) (pos? hours) (pos? minutes) (pos? seconds))
-              [end-time-countdown-unit
-               {:unit :seconds
-                :amount seconds}])
-            (when (every? zero? (vals time-remaining))
-              [:span
-               {:style styles/offering-detail-center-value}
-               "finished"])]])))))
-
-(defn offering-bid-count-row []
-  (let [offering (subscribe [:offerings/route-offering])]
-    (fn [props]
-      (let [{:keys [:offering/auction? :auction-offering/bid-count]} @offering]
-        (when auction?
-          [row-with-cols
-           (r/merge-props
-             {:center "xs"}
-             props)
-           [col
-            {:xs 12
-             :style styles/offering-detail-center-headline}
-            "number of bids"]
-           [col
-            {:xs 12
-             :style styles/offering-detail-center-value}
-            bid-count]])))))
+      (let [{:keys [:offering/address]} @offering
+            time-remaining @(subscribe [:auction-offering/end-time-countdown address])]
+        [ui/Grid
+         {:columns "equal"
+          :divided true
+          :text-align :center
+          :vertical-align :middle
+          :style {:height "50px"}}
+         (for [unit [:days :hours :minutes :seconds]]
+           (let [amount (get time-remaining unit 0)]
+             [ui/GridColumn
+              {:key unit}
+              [:div.stat-number amount]
+              [:div.time-unit (pluralize (time-unit->text unit) amount)]]))]))))
 
 (defn warnings [{:keys [:offering] :as props}]
   (let [{:keys [:offering/address :offering/contains-non-ascii? :offering/top-level-name? :offering/original-owner]} offering]
@@ -161,32 +81,71 @@
        [non-ascii-characters-warning
         {:style styles/margin-top-gutter-mini}])]))
 
+(defn offering-stats [{:keys [:offering]}]
+  (let [offering (subscribe [:offerings/route-offering])]
+    (fn []
+      (let [{:keys [:offering/price :offering/type :offering/auction? :auction-offering/bid-count]} @offering
+            price-formatted (str (to-locale-string price 4) " ETH")]
+        [:div.offering-stats
+         {:class type}
+         (if auction?
+           [ui/Grid
+            {:celled true
+             :columns 3
+             :centered true}
+            [ui/GridColumn
+             {:width 8
+              :class :price}
+             [:div.offering-stat
+              [:h5.ui.header.sub
+               (if (pos? bid-count) "Highest Bid" "Starting Price")]
+              [:div.stat-number price-formatted]]]
+            [ui/GridColumn
+             {:width 8
+              :class :bid-count}
+             [:div.offering-stat
+              [:h5.ui.header.sub "Number of bids"]
+              [:div.stat-number bid-count]]]
+            [ui/GridRow
+             [ui/GridColumn
+              {:width 16
+               :class :time-remaining}
+              [:div.offering-stat
+               [:h5.ui.header.sub "Time Remaining"]
+               [auction-offering-countdown]]]]]
+           [ui/Grid
+            {:columns 1
+             :celled true}
+            [ui/GridColumn
+             {:class :price}
+             [:div.offering-stat
+              [:h5.ui.header.sub "Price"]
+              [:div.stat-number price-formatted]]]])]))))
+
 (defn offering-detail []
   (let [offering (subscribe [:offerings/route-offering])]
     (fn []
-      [:div
-       [row
-        [offering-status-chip]
-        [offering-type-chip
-         {:style styles/margin-left-gutter-mini}]]
-       [row
-        [offering-general-info
-         {:offering @offering
-          :style (merge styles/margin-top-gutter-less
-                        styles/text-overflow-ellipsis)}]]
-       [warnings
-        {:offering @offering
-         :style styles/margin-top-gutter-less}]
-       [offering-price-row
-        {:style styles/margin-top-gutter-more}]
-       [offering-bid-count-row
-        {:style styles/margin-top-gutter-less}]
-       [auction-offering-end-time-countdown-row
-        {:style styles/margin-top-gutter-less}]
-       [row
-        {:style styles/margin-top-gutter-more}
-        [action-form
-         {:offering @offering}]]])))
+      [ui/Grid
+       {:class "layout-grid submit-footer offering-detail"
+        :celled "internally"}
+       [ui/GridRow
+        [ui/GridColumn
+         {:mobile 16
+          :computer 8}
+         [:div.chips
+          [offering-status-chip]
+          [offering-type-chip]]
+         [:div
+          [offering-general-info
+           {:offering @offering}]]]
+        [ui/GridColumn
+         {:mobile 16
+          :computer 8}
+         [offering-stats]]]
+       [ui/GridRow
+        ]
+       [ui/GridRow
+        ]])))
 
 (defn similar-offerings []
   (let [search-results (subscribe [:offerings/similar-offerings])]
@@ -194,7 +153,7 @@
       (let [{:keys [:items :loading? :params :total-count]} @search-results]
         [paper
          {:style styles/search-results-paper-secondary}
-         [:h1
+         [:h1.ui.header
           {:style styles/search-results-paper-headline}
           "Similar Offerings"]
          [search-results-infinite-list
@@ -218,12 +177,10 @@
       (let [{:keys [:offering/address]} @route-params
             offering-loaded? @(subscribe [:offering/loaded? address])
             offering @(subscribe [:offering address])]
-        [side-nav-menu-center-layout
-         [paper
-          [:h1
-           {:style styles/page-headline}
-           "Offering " (:offering/name offering)]
+        [app-layout
+         [ui/Segment
+          [:h1.ui.header.padded "Offering " (:offering/name offering)]
           (if offering-loaded?
             [offering-detail]
-            [list-item-placeholder])]
-         [similar-offerings]]))))
+            [:div.padded [content-placeholder]])]
+         #_[similar-offerings]]))))

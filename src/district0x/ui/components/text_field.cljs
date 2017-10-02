@@ -9,7 +9,7 @@
     [reagent.impl.template :as tmpl]))
 
 (def text-field*
-  (tmpl/adapt-react-class
+#_   (tmpl/adapt-react-class
     (aget js/MaterialUI "TextField")
     ;; Optional...
     {:synthetic-input
