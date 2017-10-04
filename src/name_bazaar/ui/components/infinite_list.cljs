@@ -1,20 +1,24 @@
 (ns name-bazaar.ui.components.infinite-list
   (:require
-    [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col]]
     [medley.core :as medley]
     [re-frame.core :refer [subscribe dispatch]]
     [react-infinite]
-    [reagent.core :as r]
-    [soda-ash.core :as ui]))
+    [reagent.core :as r]))
 
 (def react-infinite (r/adapt-react-class js/Infinite))
 
+(defn expandable-list-item-body-content [{:keys [:index]} & children]
+  (into [:div
+         {:ref (fn [el]
+                 (when el
+                   (dispatch [:infinite-list.item/set-expanded-height index (aget el "clientHeight")])))}]
+        children))
+
 (defn expandable-list-item-body [{:keys [:index :collapsed-height] :as props} & children]
-  (into
-    [:div.body
-     {:style {:height @(subscribe [:infinite-list.item/expanded-body-height index collapsed-height])}}]
-    (when @(subscribe [:infinite-list.item/expanded? index]) ;; This is important for performance reasons
-      children)))
+  [:div.body
+   {:style {:height @(subscribe [:infinite-list.item/expanded-body-height index collapsed-height])}}
+   (when @(subscribe [:infinite-list.item/expanded? index]) ;; This is important for performance reasons
+     (into [expandable-list-item-body-content {:index index}] children))])
 
 (defn expandable-list-item-header []
   (fn [{:keys [:index :expanded-height :collapsed-height :on-collapse :on-expand disable-expand? :on-click] :as props}
@@ -35,7 +39,7 @@
                           (do
                             (when (fn? on-expand)
                               (on-expand))
-                            (dispatch [:infinite-list.item/expand index expanded-height])))))}]
+                            (dispatch [:infinite-list.item/initialize-expand index])))))}]
         children))))
 
 (defn expandable-list-item [{:keys [:index :on-collapse :on-expand :expanded-height :collapsed-height :disable-expand?

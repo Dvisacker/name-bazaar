@@ -176,45 +176,50 @@
           :celled "internally"}
          [ui/GridRow
           [ui/GridColumn
-           {:computer 8
-            :mobile 16}
-           [offering-name-text-field
-            {:value name
-             :ownership-status ownership-status
-             :disabled editing?
-             :on-change #(swap! form-data assoc :offering/name (aget %2 "value"))}]]
-          [ui/GridColumn
-           {:computer 8
-            :mobile 16
-            :vertical-align :bottom}
-           [offering-type-select-field
-            {:value type
-             :disabled editing?
-             :on-change #(swap! form-data assoc :offering/type (keyword (aget %2 "value")))}]]
-          [ui/GridColumn
-           {:computer 8
-            :mobile 16}
-           [token-input
-            {:label (if auction? "Starting Price" "Price")
-             :fluid true
-             :value price
-             :error (not valid-price?)
-             :on-change #(swap! form-data assoc :offering/price (aget %2 "value"))}]]
-          (when auction?
+           {:width 16}
+           [ui/Grid
+            {:relaxed "very"}
+            [ui/GridColumn
+             {:computer 8
+              :mobile 16}
+             [offering-name-text-field
+              {:value name
+               :ownership-status ownership-status
+               :disabled editing?
+               :on-change #(swap! form-data assoc :offering/name (aget %2 "value"))}]]
+            [ui/GridColumn
+             {:computer 8
+              :mobile 16
+              :vertical-align :bottom}
+             [offering-type-select-field
+              {:value type
+               :disabled editing?
+               :on-change #(swap! form-data assoc :offering/type (keyword (aget %2 "value")))}]]
             [ui/GridColumn
              {:computer 8
               :mobile 16}
              [token-input
-              {:label "Min. Bid Increase"
+              {:label (if auction? "Starting Price" "Price")
                :fluid true
-               :value min-bid-increase
-               :error (not valid-min-bid-increase?)
-               :on-change #(swap! form-data assoc :auction-offering/min-bid-increase (aget %2 "value"))}]])
-          (when auction?
-            [ui/GridColumn
-             {:mobile 16}
-             [:div.input-info.min-bid-increase
-              "New bids will need to be at least " min-bid-increase " ETH higher than previous highest bid."]])]
+               :value price
+               :error (not valid-price?)
+               :on-change #(swap! form-data assoc :offering/price (aget %2 "value"))}]]
+            (when auction?
+              [ui/GridColumn
+               {:computer 8
+                :mobile 16}
+               [token-input
+                {:label "Min. Bid Increase"
+                 :fluid true
+                 :value min-bid-increase
+                 :error (not valid-min-bid-increase?)
+                 :on-change #(swap! form-data assoc :auction-offering/min-bid-increase (aget %2 "value"))}]])
+            (when auction?
+              [ui/GridColumn
+               {:mobile 16
+                :class :join-upper}
+               [:div.input-info.min-bid-increase
+                "New bids will need to be at least " min-bid-increase " ETH higher than previous highest bid."]])]]]
          (when auction?
            [ui/GridRow
             [ui/GridColumn
@@ -224,6 +229,7 @@
                :on-change #(swap! form-data assoc :auction-offering/extension-duration (aget % "target" "value"))}]]])
          (when (or auction? (not editing?))
            [ui/GridRow
+            {:class (when (not auction?) :hide-divider)}
             (when auction?
               [ui/GridColumn
                {:computer 8
@@ -233,7 +239,8 @@
                  :on-change #(swap! form-data assoc :auction-offering/end-time %)}]])
             (when-not editing?
               [ui/GridColumn
-               {:mobile 16}
+               {:mobile 16
+                :class "join-upper"}
                [:div.input-info
                 (if auction?
                   "You will be able to edit parameters of this auction as long as there are no bids."

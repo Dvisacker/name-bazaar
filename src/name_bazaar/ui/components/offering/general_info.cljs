@@ -87,7 +87,7 @@
                 :auction-offering/min-bid-increase :auction-offering/extension-duration
                 :auction-offering/winning-bidder]} offering
         registrar-entry @(subscribe [:offering/registrar-entry address])]
-    [:div.offering-general-info
+    [:div.description.ellipsis
      (dissoc props :offering)
      [offering-name-line
       {:offering/name name}]

@@ -1,5 +1,6 @@
 (ns district0x.ui.components.text-field
   (:require
+    [cljs-react-material-ui.reagent :as ui]
     [district0x.shared.utils :as d0x-shared-utils :refer [http-url?]]
     [district0x.ui.utils :as d0x-ui-utils :refer [current-component-mui-theme parse-props-children create-with-default-props valid-length?]]
     [goog.string :as gstring]
@@ -8,7 +9,7 @@
     [reagent.core :as r]
     [reagent.impl.template :as tmpl]))
 
-(def text-field*
+(def text-field* ui/text-field
 #_   (tmpl/adapt-react-class
     (aget js/MaterialUI "TextField")
     ;; Optional...

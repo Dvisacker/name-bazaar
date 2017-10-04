@@ -13,6 +13,9 @@
 @darkBlue: fade(#47608e, 87);
 @lightBlue: #3d5afe;
 @grey: #b2bacb;
+@cyan: #13d8bf;
+@orange: #ff8400;
+@red: #ff000a;
 
 @negativeColor: @pink;
 @negativeBackgroundColor: transparent;
@@ -20,19 +23,27 @@
 @negativeBorderColor: @negativeColor;
 
 @positiveColor: @darkGreen;
+@warningColor: @red;
 
 @bodyBackground: #f8f9fe;
 @textColor: fade(@brown, 87);
 @primaryColor: @lightGreen;
+@secondaryColor: @pink;
+@tertiaryColor: @purple;
+@whiteTextColor: fade(#FFF, 87);
+@invertedTextColor: @whiteTextColor;
 @fontName: 'proxima-nova';
-@headerFont: 'filson-soft';
+@pageFont: @fontName, 'sans-serif';
+@headerFont: 'filson-soft', 'sans-serif';
 @secondaryHeaderFont: 'proxima-nova-extra-condensed', sans-serif;
+
 
 @brownBackground: @brown;
 @headerFontWeight: 300;
 @minAppHeight: 1200px;
 @sidenavWidth: 190px;
-@segmentGutter: 30px;
+@segmentGutter: 35px;
+@segmentGutterMobile: 20px;
 @segmentBorderRadius: 10px;
 @h1: 22px;
 @h5: 12px;

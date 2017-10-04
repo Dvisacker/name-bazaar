@@ -7,7 +7,9 @@
     [name-bazaar.shared.utils :refer [emergency-state-new-owner]]
     [name-bazaar.ui.constants :as constants]
     [name-bazaar.ui.utils :refer [registrar-entry-deed-loaded? ens-record-loaded?]]
-    [re-frame.core :refer [reg-sub subscribe]]))
+    [re-frame.core :refer [reg-sub subscribe]]
+    [cljs-web3.core :as web3]
+    [district0x.shared.big-number :as bn]))
 
 (reg-sub
   :offerings
@@ -90,6 +92,18 @@
     (and
       active-address
       (= active-address (get-in offerings [offering-address :auction-offering/winning-bidder])))))
+
+(reg-sub
+  :auction-offering/min-bid
+  (fn [[_ offering-address]]
+    [(subscribe [:offering offering-address])
+     (subscribe [:auction-offering/active-address-pending-returns offering-address])
+     (subscribe [:auction-offering/active-address-winning-bidder? offering-address])])
+  (fn [[offering pending-returns active-address-winning?]]
+    (let [{:keys [:offering/price :auction-offering/min-bid-increase :auction-offering/bid-count]} offering
+          min-bid-increase (if (pos? bid-count) min-bid-increase 0)
+          pending-returns (if active-address-winning? price pending-returns)]
+      (bn/->number (bn/- (bn/+ (web3/to-big-number price) min-bid-increase) (or pending-returns 0))))))
 
 (reg-sub
   :offering/active-address-original-owner?

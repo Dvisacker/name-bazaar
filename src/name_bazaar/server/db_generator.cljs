@@ -30,7 +30,7 @@
       (dotimes [address-index total-accounts]
         (dotimes [_ names-per-account]
           (let [owner (state/my-address server-state address-index)
-                label (normalize (rand-str 5))
+                label (normalize (rand-str (+ (rand-int 7) 3)))
                 name (str label "." registrar/root-node)
                 node (namehash name)
                 ;offering-type :auction-offering

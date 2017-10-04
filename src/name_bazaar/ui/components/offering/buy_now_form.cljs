@@ -14,9 +14,9 @@
       :style (merge styles/full-height styles/full-width)}
      [transaction-button
       {:primary true
-       :label "Buy"
        :pending? @(subscribe [:buy-now-offering.buy/tx-pending? address])
        :pending-text "Buying..."
        :disabled (not node-owner?)
        :on-click #(dispatch [:buy-now-offering/buy {:offering/address address
-                                                    :offering/price price}])}]]))
+                                                    :offering/price price}])}
+      "Buy"]]))

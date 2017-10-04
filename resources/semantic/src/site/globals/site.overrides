@@ -25,6 +25,7 @@ body {
 a, a:hover {
   text-decoration: underline;
   color: inherit;
+  cursor: pointer;
 }
 
 h4, h5, h6 {
@@ -599,7 +600,7 @@ h4, h5, h6 {
         }
       }
       .chips {
-        margin-bottom: 30px;
+        margin-bottom: @segmentGutterMobile;
         .offering-chip {
           border-radius: 20px;
           border: 1px solid #000;
@@ -610,10 +611,30 @@ h4, h5, h6 {
           background: no-repeat 13px 50%;
           margin-right: 14px;
           &.offering-status {
-            &.active, &.missing-ownership {
+            &.active {
               border-color: @green;
               color: @green;
               background-image: url(../images/active-icon-green.png);
+            }
+            &.missing-ownership {
+              border-color: @pink;
+              color: @pink;
+              background-image: url(../images/missing-ownership-icon-pink.png);
+            }
+            &.finalized {
+              border-color: @cyan;
+              color: @cyan;
+              background-image: url(../images/finalized-icon-cyan.png);
+            }
+            &.auction-ended {
+              border-color: @orange;
+              color: @orange;
+              background-image: url(../images/auction-ended-icon-orange.png);
+            }
+            &.emergency {
+              border-color: @red;
+              color: @red;
+              background-image: url(../images/emergency-icon-red.png);
             }
           }
           &.offering-type {
@@ -632,19 +653,57 @@ h4, h5, h6 {
         }
       }
     }
-    .offering-general-info {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      color: @darkBlue;
-      line-height: 2;
+  }
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.description {
+  color: @darkBlue;
+  line-height: 1.8;
+  &.warning {
+    color: @warningColor;
+  }
+  &.success {
+    color: @positiveColor;
+  }
+}
+
+.bid-section {
+  padding: 0;
+  .header {
+    color: @whiteTextColor;
+    padding-bottom: 25px;
+    font-size: 20px;
+  }
+  .input-section {
+    display: flex;
+    background-color: #FFF;
+    padding: 13px;
+    border-radius: @segmentBorderRadius;
+    .input {
+      flex-grow: 1;
+      margin-right: 25px;
     }
   }
 }
 
+.bottom-section-buttons {
+  & > .ui.button {
+    margin: 0 5px;
+  }
+}
+
 .ui.segment {
-  .padded {
+  & > .padded {
     padding: @segmentGutter;
+    @media only screen and (max-width: @largestMobileScreen) {
+      padding: @segmentGutterMobile;
+    }
     &.ui.header:not(.sub) {
       padding-bottom: 0;
       margin-bottom: 0;
@@ -654,9 +713,19 @@ h4, h5, h6 {
   .ui.grid.layout-grid  {
     margin: 0;
     & > .row {
-      padding: @segmentGutter;
+      padding: 0;
+      &.hide-divider {
+        box-shadow: none;
+      }
       & > .column {
+        padding: @segmentGutter;
+        @media only screen and (max-width: @largestMobileScreen) {
+          padding: @segmentGutterMobile;
+        }
         box-shadow: none !important;
+        &.join-upper {
+          padding-top: 0;
+        }
       }
     }
 
@@ -665,6 +734,9 @@ h4, h5, h6 {
       border-bottom-right-radius: @segmentBorderRadius;
       background: @brownBackground url(../images/namebazaar-pattern.png) no-repeat top center;
       background-size: 100% auto;
+      & > * {
+        padding: 25px;
+      }
     }
   }
 }

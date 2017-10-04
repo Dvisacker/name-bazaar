@@ -6,21 +6,22 @@
     [district0x.ui.components.misc :as misc :refer [row row-with-cols col paper page]]
     [district0x.ui.components.transaction-button :refer [transaction-button]]
     [district0x.ui.utils :refer [to-locale-string time-unit->text pluralize]]
+    [medley.core :as medley]
     [name-bazaar.shared.utils :refer [name-level]]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
+    [name-bazaar.ui.components.loading-placeholders :refer [content-placeholder]]
     [name-bazaar.ui.components.misc :refer [a]]
-    [name-bazaar.ui.components.offering.action-form :refer [action-form]]
+    [name-bazaar.ui.components.offering.middle-section :refer [offering-middle-section]]
+    [name-bazaar.ui.components.offering.bottom-section :refer [offering-bottom-section]]
     [name-bazaar.ui.components.offering.general-info :refer [offering-general-info]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.components.offering.warnings :refer [non-ascii-characters-warning missing-ownership-warning sub-level-name-warning]]
     [name-bazaar.ui.components.search-results.infinite-list :refer [search-results-infinite-list]]
-    [name-bazaar.ui.components.loading-placeholders :refer [content-placeholder]]
     [name-bazaar.ui.constants :as constants]
     [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [namehash sha3 strip-eth-suffix offering-type->text]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]
-    [medley.core :as medley]
     [soda-ash.core :as ui]))
 
 (def offering-status->text
@@ -63,23 +64,6 @@
               {:key unit}
               [:div.stat-number amount]
               [:div.time-unit (pluralize (time-unit->text unit) amount)]]))]))))
-
-(defn warnings [{:keys [:offering] :as props}]
-  (let [{:keys [:offering/address :offering/contains-non-ascii? :offering/top-level-name? :offering/original-owner]} offering]
-    [:div
-     (r/merge-props
-       {:style styles/full-width}
-       (dissoc props :offering))
-     (when @(subscribe [:offering/missing-ownership? address])
-       [missing-ownership-warning
-        {:offering/original-owner original-owner}])
-     (when (not top-level-name?)
-       [sub-level-name-warning
-        {:offering/name name
-         :style styles/margin-top-gutter-mini}])
-     (when contains-non-ascii?
-       [non-ascii-characters-warning
-        {:style styles/margin-top-gutter-mini}])]))
 
 (defn offering-stats [{:keys [:offering]}]
   (let [offering (subscribe [:offerings/route-offering])]
@@ -143,9 +127,12 @@
           :computer 8}
          [offering-stats]]]
        [ui/GridRow
-        ]
+        [offering-middle-section
+         {:offering @offering}]]
        [ui/GridRow
-        ]])))
+        {:centered true}
+        [offering-bottom-section
+         {:offering @offering}]]])))
 
 (defn similar-offerings []
   (let [search-results (subscribe [:offerings/similar-offerings])]

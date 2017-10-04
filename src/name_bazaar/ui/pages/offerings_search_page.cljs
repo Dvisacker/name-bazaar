@@ -365,9 +365,7 @@
   (let [xs-sm? (subscribe [:district0x.screen-size/max-tablet?])]
     (fn []
       [app-layout
-       [ui/Segment
-        "Hello"]
        #_ (if @xs-sm?
          [search-params-panel-mobile]
          [search-params-panel])
-       #_ [offerings-search-results]])))
+         [offerings-search-results]])))

@@ -27,8 +27,7 @@
 (defn token-input [{:keys [:token-code] :as props :or {token-code "ETH"}}]
   [input
    (r/merge-props
-     {:action (r/as-element [ui/Label token-code])
-      :action-position :right}
+     {:action (r/as-element [ui/Label token-code])}
      (dissoc props :token-code))])
 
 

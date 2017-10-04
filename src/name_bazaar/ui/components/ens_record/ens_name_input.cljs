@@ -9,6 +9,5 @@
 (defn ens-name-input [props]
   [input
    (r/merge-props
-     {:action (r/as-element [ui/Label constants/registrar-root])
-      :action-position :right}
+     {:action (r/as-element [ui/Label constants/registrar-root])}
      props)])
