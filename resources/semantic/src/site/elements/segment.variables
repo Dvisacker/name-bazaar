@@ -3,7 +3,7 @@
 *******************************/
 
 @border: none;
-@boxShadow: 2px 4px 4px 2px rgba(0,0,0,.02);
+@boxShadow: @segmentBoxShadow;
 @borderRadius: @segmentBorderRadius;
 @padding: 0;
 @paddedSegmentPadding: @segmentGutter;

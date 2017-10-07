@@ -7,7 +7,7 @@
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
-    [name-bazaar.ui.components.search-fields.offerings-order-by-select-field :refer [offerings-order-by-select-field]]
+    [name-bazaar.ui.components.offering.offerings-order-by-select :refer [offerings-order-by-select]]
     [name-bazaar.ui.components.search-results.infinite-list :refer [search-results-infinite-list]]
     [name-bazaar.ui.styles :as styles]
     [re-frame.core :refer [subscribe dispatch]]))
@@ -17,7 +17,7 @@
         search-results (subscribe [:offerings/user-offerings])]
     (fn []
       (let [{:keys [:params]} @search-results]
-        [offerings-order-by-select-field
+        [offerings-order-by-select
          {:order-by-column (first (:order-by-columns params))
           :order-by-dir (first (:order-by-dirs params))
           :full-width (not @xs?)

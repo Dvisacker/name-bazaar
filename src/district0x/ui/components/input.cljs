@@ -8,8 +8,9 @@
 (defn input []
   "Puts 'dirty' class if input is non-empty"
   "Puts 'focus' class if input is focused"
+  "Prevents SemanticUI warning about value being null"
   (let [focus? (r/atom false)]
-    (fn [{:keys [:value :on-focus :on-blur] :as props}]
+    (fn [{:keys [:value :on-focus :on-blur :value] :as props}]
       [ui/Input
        (r/merge-props
          {:class (str (when-not (empty? (str value)) "dirty")
@@ -22,7 +23,8 @@
                      (reset! focus? false)
                      (when (fn? on-blur)
                        (apply on-blur args)))}
-         props)])))
+         (merge (dissoc props :value)
+                {:value (if value value "")}))])))
 
 (defn token-input [{:keys [:token-code] :as props :or {token-code "ETH"}}]
   [input

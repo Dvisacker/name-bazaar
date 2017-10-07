@@ -1,12 +1,13 @@
 (ns name-bazaar.ui.pages.watched-names-page
   (:require
-    [cljs-react-material-ui.reagent :as ui]
-    [district0x.ui.components.misc :as misc :refer [row row-with-cols col paper page]]
+    [cljs-react-material-ui.reagent :as mui]
+    [district0x.ui.components.misc :as misc :refer [page]]
     [district0x.ui.components.text-field :refer [text-field-with-suffix]]
     [district0x.ui.utils :refer [current-component-mui-theme]]
     [medley.core :as medley]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.ens-name-details :refer [ens-name-details]]
+    [name-bazaar.ui.components.ens-record.ens-name-input :refer [ens-name-input]]
     [name-bazaar.ui.components.icons :as icons]
     [name-bazaar.ui.components.infinite-list :refer [infinite-list expandable-list-item]]
     [name-bazaar.ui.components.misc :refer [a]]
@@ -17,7 +18,8 @@
     [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [valid-ens-name?]]
     [re-frame.core :refer [subscribe dispatch]]
-    [reagent.core :as r]))
+    [reagent.core :as r]
+    [soda-ash.core :as ui]))
 
 (defn- add-to-watched-names! [new-name-atom]
   (when (seq @new-name-atom)
@@ -25,102 +27,82 @@
     (reset! new-name-atom "")))
 
 (defn add-watched-name-form []
-  (let [xs? (subscribe [:district0x.screen-size/mobile?])
-        new-name (r/atom "")]
+  (let [new-name (r/atom "")]
     (fn []
-      [:div
-       {:style styles/margin-left-gutter-less}
-       [text-field-with-suffix
-        {:floating-label-text "Enter Name"
-         :full-width @xs?
+      [:div.add-watched-name-form
+       [ens-name-input
+        {:label "Enter Name"
          :value @new-name
          :on-key-press (fn [e]
                          (when (= (aget e "key") "Enter")
                            (add-to-watched-names! new-name)))
-         :on-change (fn [e value]
-                      (when (valid-ens-name? value)
-                        (reset! new-name value)))}
-        [row
-         [:span
-          {:style styles/text-field-suffix}
-          constants/registrar-root]
-         [ui/icon-button
-          {:style styles/add-to-watched-names-button
-           :on-click #(add-to-watched-names! new-name)}
-          (icons/plus
-            {:color (current-component-mui-theme "paper" "color")})]]]])))
+         :on-change (fn [e data]
+                      (let [value (aget data "value")]
+                        (when (valid-ens-name? value)
+                          (reset! new-name value))))}]
+       [:div.add-watched-name-icon]])))
 
 (defn watch-item-placeholder []
-  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
+  (let [mobile? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:watched-name] :as props}]
       (let [{:keys [:ens.record/name]} watched-name]
         [expandable-list-item
          {:disable-expand? true
-          :collapsed-height (styles/search-results-list-item-height @xs?)}
-         [:div
-          (r/merge-props
-            {:style (styles/search-results-list-item @xs?)}
-            (dissoc props :watched-name))
-          [row-with-cols
-           {:style (merge styles/search-results-list-item-header)
-            :between "sm"
-            :middle "sm"}
-           [col
-            {:xs 12 :sm 5}
-            [:div
-             {:style styles/list-item-ens-record-name}
-             name]]]]]))))
-
-(defn remove-all-button []
-  (let [xs? (subscribe [:district0x.screen-size/mobile?])]
-    (fn []
-      [row
-       {:end "sm"}
-       [:a
-        {:style (merge styles/margin-right-gutter-less
-                       styles/margin-left-gutter-less
-                       (when @xs?
-                         styles/margin-top-gutter-less))
-         :on-click #(dispatch [:watched-names/remove-all])}
-        "Clear All"]])))
+          :collapsed-height (constants/infinite-list-collapsed-item-height @mobile?)}
+         [:div.ui.grid.padded.search-results-list-item
+          [ui/GridRow
+           {:class "search-results-list-item-header opacity-1"
+            :vertical-align :middle}
+           [ui/GridColumn
+            {:width 16}
+            name]]]]))))
 
 (defn watched-names-infinite-list []
-  (let [xs? (subscribe [:district0x.screen-size/mobile?])
+  (let [mobile? (subscribe [:district0x.screen-size/mobile?])
         watched-items (subscribe [:watched-names/watched-items])]
     (fn []
-      [:div
-       {:style styles/margin-top-gutter-less}
-       [infinite-list
-        {:collapsed-item-height (styles/search-results-list-item-height @xs?)
-         :total-count (count @watched-items)
-         :no-items-element (r/as-element [:div
-                                          {:style styles/search-results-no-items}
-                                          "You are not watching any names"])}
-        (doall
-          (for [{:keys [:ens.record/node] :as watched-item} @watched-items]
-            (cond
-              (:offering/address watched-item)
-              [offering-list-item
-               {:key node
-                :offering watched-item}]
+      [infinite-list
+       {:collapsed-item-height (constants/infinite-list-collapsed-item-height @mobile?)
+        :total-count (count @watched-items)
+        :no-items-element (r/as-element [:div "You are not watching any names"])}
+       (doall
+         (for [{:keys [:ens.record/node] :as watched-item} @watched-items]
+           (cond
+             (:offering/address watched-item)
+             [offering-list-item
+              {:key node
+               :offering watched-item}]
 
-              (:offering-request/requesters-count watched-item)
-              [offering-request-list-item
-               {:key node
-                :offering-request watched-item}]
+             (:offering-request/requesters-count watched-item)
+             [offering-request-list-item
+              {:key node
+               :offering-request watched-item}]
 
-              :else
-              [watch-item-placeholder
-               {:key node
-                :watched-name watched-item}])))]])))
+             :else
+             [watch-item-placeholder
+              {:key node
+               :watched-name watched-item}])))])))
 
 (defmethod page :route/watched-names []
   [app-layout
-   [paper
-    {:style styles/search-results-paper}
-    [:h1
-     {:style styles/search-results-paper-headline}
-     "Watched Names"]
-    [add-watched-name-form]
-    [remove-all-button]
-    [watched-names-infinite-list]]])
+   [ui/Segment
+    {:class "watched-names"}
+    [:h1.ui.header.padded "Watched Names"]
+    [ui/Grid
+     {:class "layout-grid"}
+     [ui/GridRow
+      [ui/GridColumn
+       {:computer 8
+        :tablet 12
+        :mobile 16}
+       [add-watched-name-form]]]
+     [ui/GridRow
+      [ui/GridColumn
+       {:class :join-upper
+        :text-align :right}
+       [:a.clear-all
+        {:on-click #(dispatch [:watched-names/remove-all])}
+        "Clear All"]]]
+     [ui/GridRow
+      [ui/GridColumn
+       [watched-names-infinite-list]]]]]])

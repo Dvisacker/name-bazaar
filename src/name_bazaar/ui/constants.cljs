@@ -51,3 +51,6 @@
         [true :route/home]]])
 
 (def interceptors [trim-v (validate-db :name-bazaar.ui.db/db)])
+
+(defn infinite-list-collapsed-item-height [mobile?]
+  (if mobile? 70 54))

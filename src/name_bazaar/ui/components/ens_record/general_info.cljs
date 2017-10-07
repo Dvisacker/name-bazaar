@@ -11,15 +11,10 @@
 
 (defn ens-record-general-info [{:keys [:ens.record/name] :as props}]
   (let [{:keys [:ens.record/owner :ens.record/resolver]} @(subscribe [:ens/record (namehash name)])]
-    [:div
-     (r/merge-props
-       {}
-       (dissoc props :ens.record/name))
-     [:div
-      {:style styles/name-general-info-headline}
-      "ENS Information"]
-     [:div
-      {:style styles/text-overflow-ellipsis}
+    [:div.ens-record-general-info.description
+     (dissoc props :ens.record/name)
+     [:div [:b "ENS Information"]]
+     [:div.ellipsis
       "Owner: " (cond
                   (not (empty-address? owner))
                   [a {:route :route.user/offerings
@@ -30,8 +25,7 @@
                   "none"
 
                   :else "")]
-     [:div
-      {:style styles/text-overflow-ellipsis}
+     [:div.ellipsis
       "Resolver: " (if (zero-address? resolver)
                      "none"
                      [etherscan-link {:address resolver}])]]))

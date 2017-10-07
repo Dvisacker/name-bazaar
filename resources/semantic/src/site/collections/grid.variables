@@ -4,3 +4,4 @@
 
 @celledBorderColor: fade(@lightBrown, 15);
 @borderColor: @celledBorderColor;
+@celledPadding: @segmentGutter;

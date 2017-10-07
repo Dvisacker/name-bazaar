@@ -159,6 +159,8 @@
 
 (def time-unit->text {:days "day" :hours "hour" :minutes "minute" :seconds "second"})
 
+(def time-unit->short-text {:days "day" :hours "hour" :minutes "min." :seconds "sec."})
+
 (defn format-time-duration-unit [unit amount]
   (str amount " " (pluralize (time-unit->text unit) amount)))
 

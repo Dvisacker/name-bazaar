@@ -9,9 +9,8 @@
         watched? @(subscribe [:watched-names.node/watched? node])
         on-click-event (if watched? :watched-names/remove :watched-names/add)]
     [:div
-     [:a
-      {:style styles/text-decor-none
-       :on-click (fn []
+     [:a.no-decor
+      {:on-click (fn []
                    (if watched?
                      (dispatch [:watched-names/remove node])
                      (dispatch [:watched-names/add name])))}

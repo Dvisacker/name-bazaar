@@ -1,11 +1,9 @@
 (ns name-bazaar.ui.components.loading-placeholders
   (:require [reagent.core :as r]))
 
-(defn list-item-placeholder [{:keys [:visible?] :as props}]
+(defn list-item-placeholder [props]
   [:div.loading-placeholder.list-item-placeholder
-   (r/merge-props
-     (when-not visible? {:class "hidden"})
-     (dissoc props :visible?))
+   props
    [:div.placeholder-background-masker.masker-1]
    [:div.placeholder-background-masker.masker-2]
    [:div.placeholder-background-masker.masker-3]

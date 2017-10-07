@@ -7,21 +7,19 @@
 
 (def react-infinite (r/adapt-react-class js/Infinite))
 
-(defn expandable-list-item-body-content [{:keys [:index]} & children]
-  (into [:div
-         {:ref (fn [el]
-                 (when el
-                   (dispatch [:infinite-list.item/set-expanded-height index (aget el "clientHeight")])))}]
-        children))
-
-(defn expandable-list-item-body [{:keys [:index :collapsed-height] :as props} & children]
-  [:div.body
-   {:style {:height @(subscribe [:infinite-list.item/expanded-body-height index collapsed-height])}}
-   (when @(subscribe [:infinite-list.item/expanded? index]) ;; This is important for performance reasons
-     (into [expandable-list-item-body-content {:index index}] children))])
+(defn expandable-list-item-body []
+  (let [visible? (r/atom false)]
+    (fn [{:keys [:index] :as props} & children]
+      (into [:div.body
+             {:class (when @visible? :opacity-1)
+              :ref (fn [el]
+                     (reset! visible? true)
+                     (when el
+                       (dispatch [:infinite-list.item/set-expanded-height index (aget el "clientHeight")])))}]
+            children))))
 
 (defn expandable-list-item-header []
-  (fn [{:keys [:index :expanded-height :collapsed-height :on-collapse :on-expand disable-expand? :on-click] :as props}
+  (fn [{:keys [:index :collapsed-height :on-collapse :on-expand :disable-expand? :on-click] :as props}
        & children]
     (let [expanded? @(subscribe [:infinite-list.item/expanded? index])]
       (into
@@ -42,23 +40,21 @@
                             (dispatch [:infinite-list.item/initialize-expand index])))))}]
         children))))
 
-(defn expandable-list-item [{:keys [:index :on-collapse :on-expand :expanded-height :collapsed-height :disable-expand?
+(defn expandable-list-item [{:keys [:index :on-collapse :on-expand :collapsed-height :disable-expand?
                                     :on-click]}
                             header body]
   [:div.expandable-list-item
    [expandable-list-item-header
     {:index index
-     :expanded-height expanded-height
      :on-collapse on-collapse
      :on-expand on-expand
      :disable-expand? disable-expand?
      :collapsed-height collapsed-height
      :on-click on-click}
     header]
-   (when-not disable-expand?
+   (when (and (not disable-expand?) @(subscribe [:infinite-list.item/expanded? index]))
      [expandable-list-item-body
-      {:index index
-       :collapsed-height collapsed-height}
+      {:index index}
       body])])
 
 (defn infinite-list [{:keys [:initial-load-limit :next-load-limit :offset :loading? :loading-spinner-delegate
@@ -70,9 +66,10 @@
       no-items-element
       [react-infinite
        (r/merge-props
-         {:element-height @(subscribe [:infinite-list/items-heights (count list-items) collapsed-item-height])
+         {:class "infinite-list"
+          :element-height @(subscribe [:infinite-list/items-heights (count list-items) collapsed-item-height])
           :use-window-as-scroll-container true
-          :infinite-load-begin-edge-offset -250
+          :infinite-load-begin-edge-offset 60
           :is-infinite-loading (and loading? (not all-items-loaded?))
           :on-infinite-load (fn []
                               (when (and (not loading?)

@@ -7,3 +7,12 @@
   border-left: none;
   border-top: none;
 }
+
+.ui.selection.dropdown {
+  & > .text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}

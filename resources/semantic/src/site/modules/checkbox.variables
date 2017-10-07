@@ -1,3 +1,21 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+@checkboxSize: 24px;
+@checkboxBorderRadius: 100%;
+@checkboxFocusBackground: transparent;
+@checkboxBackground: transparent;
+@checkboxActiveBackground: @pink;
+@checkboxActiveFocusBackground: @pink;
+@checkboxActiveCheckColor: @white;
+@solidBorderColor: fade(@darkBlue, 13);
+@checkboxActiveBorderColor: transparent;
+@checkboxHoverBorderColor: fade(@solidBorderColor, 30);
+@checkboxTransition: background-color 0.3s @defaultEasing;
+@checkboxPressedBackground: @white;
+@checkboxPressedBorderColor: fade(@solidBorderColor, 70);
+@textColor: @darkBlueText;
+@hoveredTextColor: @textColor;
+@selectedTextColor: @textColor;
+@labelDistance: 35px;

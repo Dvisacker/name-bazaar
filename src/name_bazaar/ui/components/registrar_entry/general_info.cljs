@@ -10,18 +10,15 @@
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]))
 
+
 (defn registrar-entry-general-info [{:keys [:ens.record/name] :as props}]
   (let [{:keys [:registrar.entry/state :registrar.entry.deed/address
                 :registrar.entry/registration-date :registrar.entry.deed/value
                 :registrar.entry.deed/address]}
         @(subscribe [:registrar/entry (name->label-hash name)])]
-    [:div
-     (r/merge-props
-       {}
-       (dissoc props :ens.record/name))
-     [:div
-      {:style styles/name-general-info-headline}
-      "Registrar Information"]
+    [:div.description
+     (dissoc props :ens.record/name)
+     [:div [:b "Registrar Information"]]
      [:div "Status: " (registrar-entry-state->text state)]
      [:div
       {:style styles/text-overflow-ellipsis}

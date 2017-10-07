@@ -38,6 +38,7 @@
           :value @search-name
           :show-no-results false
           :loading loading?
+          :placeholder "Enter Keyword"
           :results (transform-search-results items)
           :icon (r/as-element [:div.icon.search
                                {:on-click #(nav-to-ens-record-detail @search-name)}
@@ -66,7 +67,7 @@
         {:key i
          :offering offering
          :disable-expand? true
-         :xs? true
+         :mobile? true
          :on-click #(dispatch [:district0x.location/nav-to :route.offerings/detail offering constants/routes])}]))
    [:div
     [:a.show-more

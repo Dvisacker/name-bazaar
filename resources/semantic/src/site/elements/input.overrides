@@ -16,7 +16,6 @@
 
 .ui.input.labeled {
   position: relative;
-  margin-top: 15px;
   .ui.label:first-child {
     transition: @labelTransition;
     position: absolute;
@@ -26,7 +25,7 @@
     user-select: none;
     z-index: 1;
     padding: 0;
-    color: @grey;
+    color: @inputPlaceholderColor;
     font-size: inherit;
     bottom: @verticalPadding;
   }

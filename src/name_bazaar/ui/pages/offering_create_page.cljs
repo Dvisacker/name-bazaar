@@ -15,6 +15,7 @@
     [name-bazaar.ui.components.ens-record.ens-name-input :refer [ens-name-input]]
     [name-bazaar.ui.components.loading-placeholders :refer [content-placeholder]]
     [name-bazaar.ui.components.misc :refer [a]]
+    [name-bazaar.ui.components.offering.offering-type-select :refer [offering-type-select]]
     [name-bazaar.ui.constants :as constants]
     [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [namehash sha3 strip-eth-suffix valid-ens-name? path-for]]
@@ -77,14 +78,6 @@
                               (dispatch [:registrar.entries/load [(sha3 value)]]))))))}
         (dissoc props :ownership-status :on-change))]
      [:div.ui.label (ownership-status->text ownership-status)]]))
-
-(defn offering-type-select-field [props]
-  [ui/Select
-   (r/merge-props
-     {:fluid true
-      :options [{:value :buy-now-offering :text "Buy Now"}
-                {:value :auction-offering :text "Auction"}]}
-     props)])
 
 (defn offering-default-form-data []
   (let [end-time (to-date (t/plus (t/now) (t/days 3)))]
@@ -191,8 +184,9 @@
              {:computer 8
               :mobile 16
               :vertical-align :bottom}
-             [offering-type-select-field
+             [offering-type-select
               {:value type
+               :fluid true
                :disabled editing?
                :on-change #(swap! form-data assoc :offering/type (keyword (aget %2 "value")))}]]
             [ui/GridColumn
@@ -200,6 +194,7 @@
               :mobile 16}
              [token-input
               {:label (if auction? "Starting Price" "Price")
+               :class "offering-price"
                :fluid true
                :value price
                :error (not valid-price?)
@@ -210,6 +205,7 @@
                 :mobile 16}
                [token-input
                 {:label "Min. Bid Increase"
+                 :class "offering-min-bid-increase"
                  :fluid true
                  :value min-bid-increase
                  :error (not valid-min-bid-increase?)

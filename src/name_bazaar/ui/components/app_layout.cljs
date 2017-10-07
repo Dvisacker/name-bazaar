@@ -114,27 +114,29 @@
         min-computer-screen? (subscribe [:district0x.screen-size/min-computer-screen?])
         active-page (subscribe [:district0x/active-page])]
     (fn [& children]
-      [ui/SidebarPushable
-       {:class "app-container"}
+      [:div.app-container
        [ui/Sidebar
         {:as (aget js/semanticUIReact "Menu")
          :visible (or @drawer-open? @min-computer-screen?)
          :animation "overlay"
          :vertical true
-         :inverted true}
-        [side-nav-menu-logo]
-        (doall
-          (for [{:keys [:text :route :href :class]} nav-menu-items-props]
-            (let [href (or href (path-for route))]
-              [ui/MenuItem
-               {:key text
-                :as "a"
-                :href href
-                :class class
-                :active (= (str "#" (:path @active-page)) href)}
-               text])))
-        [district0x-banner]]
-       [ui/SidebarPusher
+         :inverted true
+         :fixed :left}
+        [:div.menu-content
+         {:style {:overflow-y :scroll}}
+         [side-nav-menu-logo]
+         (doall
+           (for [{:keys [:text :route :href :class]} nav-menu-items-props]
+             (let [href (or href (path-for route))]
+               [ui/MenuItem
+                {:key text
+                 :as "a"
+                 :href href
+                 :class class
+                 :active (= (str "#" (:path @active-page)) href)}
+                text])))
+         [district0x-banner]]]
+       [:div.app-content
         {:on-click (fn []
                      (when-not @min-computer-screen?
                        (dispatch [:district0x.menu-drawer/set false])))}
@@ -143,8 +145,46 @@
          {:columns 1
           :centered true}
          (into [ui/GridColumn
-                {:widescreen 8
+                {:class :main-content
+                 :widescreen 8
                  :large-screen 12
                  :tablet 14
                  :mobile 15}]
-               children)]]])))
+               children)]]]
+
+      #_[ui/SidebarPushable
+         {:class :app-container}
+         [ui/Sidebar
+          {:as (aget js/semanticUIReact "Menu")
+           :visible (or @drawer-open? @min-computer-screen?)
+           :animation "overlay"
+           :vertical true
+           :inverted true
+           :fixed :left}
+          [side-nav-menu-logo]
+          (doall
+            (for [{:keys [:text :route :href :class]} nav-menu-items-props]
+              (let [href (or href (path-for route))]
+                [ui/MenuItem
+                 {:key text
+                  :as "a"
+                  :href href
+                  :class class
+                  :active (= (str "#" (:path @active-page)) href)}
+                 text])))
+          [district0x-banner]]
+         [ui/SidebarPusher
+          {:on-click (fn []
+                       (when-not @min-computer-screen?
+                         (dispatch [:district0x.menu-drawer/set false])))}
+          [app-bar]
+          [ui/Grid
+           {:columns 1
+            :centered true}
+           (into [ui/GridColumn
+                  {:class :main-content
+                   :widescreen 8
+                   :large-screen 12
+                   :tablet 14
+                   :mobile 15}]
+                 children)]]])))

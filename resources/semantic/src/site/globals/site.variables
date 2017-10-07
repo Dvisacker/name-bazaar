@@ -10,7 +10,7 @@
 @purple: #9d0adb;
 @lightBrown: #74647e;
 @blue: #7d96c3;
-@darkBlue: fade(#47608e, 87);
+@darkBlue: #47608e;
 @lightBlue: #3d5afe;
 @grey: #b2bacb;
 @cyan: #13d8bf;
@@ -37,14 +37,15 @@
 @headerFont: 'filson-soft', 'sans-serif';
 @secondaryHeaderFont: 'proxima-nova-extra-condensed', sans-serif;
 
-
+@darkBlueText: fade(#47608e, 87);
 @brownBackground: @brown;
 @headerFontWeight: 300;
 @minAppHeight: 1200px;
-@sidenavWidth: 190px;
-@segmentGutter: 35px;
+@sidebarWidth: 190px;
+@segmentGutter: 33px;
 @segmentGutterMobile: 20px;
 @segmentBorderRadius: 10px;
+@segmentBoxShadow: 2px 4px 4px 2px rgba(0,0,0,.02);
 @h1: 22px;
 @h5: 12px;
 @h6: 9px;
@@ -55,3 +56,4 @@
 @inputBorderColor: fade(@lightBrown, 30);
 @inputBorder: 1px solid @inputBorderColor;
 @focusedFormBorderColor: @brown;
+@inputPlaceholderColor: @grey;

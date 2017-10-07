@@ -1,3 +1,13 @@
 /*******************************
          Site Overrides
 *******************************/
+
+.ui.checkbox input:checked~.box:after, .ui.checkbox input:checked~label:after {
+  content: '';
+  background: url(../images/check-icon-white.png) no-repeat center;
+}
+
+.ui.checkbox input~label:before {
+  box-shadow: 2px 2px 3px 1px @solidBorderColor;
+}
+

@@ -89,7 +89,7 @@
             :large-screen 7
             :computer 8
             :tablet 8
-            :mobile 16
+            :mobile 14
             :text-align :center}
            [:div.bid-section
             [:div.header "Your Bid"]
