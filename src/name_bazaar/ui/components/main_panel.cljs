@@ -1,6 +1,5 @@
 (ns name-bazaar.ui.components.main-panel
   (:require
-    [cljs-react-material-ui.reagent :as ui]
     [clojure.set :as set]
     [district0x.ui.components.active-address-select :refer [active-address-select]]
     [district0x.ui.components.misc :as misc :refer [row row-with-cols col center-layout paper page]]

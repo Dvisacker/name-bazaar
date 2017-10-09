@@ -242,7 +242,7 @@
                 (merge
                   {:endpoint "/offerings"
                    :on-success [:offerings/load]}
-                  (print.foo/look opts))]}))
+                  opts)]}))
 
 (reg-event-fx
   :offerings/load

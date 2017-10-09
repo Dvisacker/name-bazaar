@@ -1,8 +1,6 @@
 (ns name-bazaar.ui.components.app-bar-search
   (:require
-    [name-bazaar.ui.components.icons :as icons]
     [name-bazaar.ui.constants :as constants]
-    [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [ensure-registrar-root valid-ens-name? normalize]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]

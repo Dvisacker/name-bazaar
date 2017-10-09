@@ -1,50 +1,59 @@
 (ns name-bazaar.ui.pages.user-purchases-page
   (:require
-    [district0x.ui.components.misc :as misc :refer [row row-with-cols col center-layout paper page]]
+    [district0x.ui.components.misc :as misc :refer [page]]
     [district0x.ui.utils :refer [truncate]]
     [medley.core :as medley]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
-    [name-bazaar.ui.components.misc :refer [a]]
+    [name-bazaar.ui.components.offering.infinite-list :refer [offering-infinite-list]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.components.offering.offerings-order-by-select :refer [offerings-order-by-select]]
-    [name-bazaar.ui.components.search-results.infinite-list :refer [search-results-infinite-list]]
-    [name-bazaar.ui.styles :as styles]
-    [re-frame.core :refer [subscribe dispatch]]))
+    [re-frame.core :refer [subscribe dispatch]]
+    [soda-ash.core :as ui]))
 
-(defn user-purchases-order-by-select-field []
+(defn user-purchases-order-by-select []
   (let [search-results (subscribe [:offerings/user-purchases])]
     (fn []
       (let [{:keys [:params]} @search-results]
         [offerings-order-by-select
          {:order-by-column (first (:order-by-columns params))
           :order-by-dir (first (:order-by-dirs params))
+          :fluid true
           :options [:offering.order-by/finalized-newest
                     :offering.order-by/finalized-oldest
                     :offering.order-by/cheapest
                     :offering.order-by/most-expensive]
-          :on-change (fn [order-by-column order-by-dir]
-                       (dispatch [:offerings.user-purchases/set-params-and-search
-                                  {:order-by-columns [order-by-column]
-                                   :order-by-dirs [order-by-dir]}]))}]))))
+          :on-change (fn [e data]
+                       (let [[order-by-column order-by-dir] (aget data "value")]
+                         (dispatch [:offerings.user-purchases/set-params-and-search
+                                    {:order-by-columns [order-by-column]
+                                     :order-by-dirs [order-by-dir]}])))}]))))
 
 (defn user-purchases []
   (let [search-results (subscribe [:offerings/user-purchases])]
     (fn [{:keys [:title :no-items-text]}]
       (let [{:keys [:items :loading? :params :total-count]} @search-results]
         [app-layout
-         [paper
-          {:style styles/search-results-paper}
-          [:h1
-           {:style styles/search-results-paper-headline}
-           title]
-          [row
-           {:end "xs"}
-           [user-purchases-order-by-select-field]]
-          [search-results-infinite-list
-           {:total-count total-count
+         [ui/Segment
+          [ui/Grid
+           {:padded true
+            :class :no-inner-horizontal-padding}
+           [ui/GridColumn
+            {:width 16
+             :class :join-upper}
+            [:h1.ui.header title]]
+           [ui/GridColumn
+            {:computer 6
+             :tablet 8
+             :mobile 16
+             :floated "right"}
+            [user-purchases-order-by-select]]]
+          [offering-infinite-list
+           {:class "primary"
+            :total-count total-count
             :offset (:offset params)
             :loading? loading?
             :no-items-text no-items-text
+            :header-props {:show-time-ago? true}
             :on-next-load (fn [offset limit]
                             (dispatch [:offerings.user-purchases/set-params-and-search
                                        {:offset offset :limit limit} {:append? true}]))}
@@ -53,9 +62,7 @@
                [offering-list-item
                 {:key i
                  :offering offering
-                 :header-props {:show-bought-for? true
-                                :show-finalized-on? true}
-                 :body-props {:hide-action-form? true}}]))]]]))))
+                 :header-props {:show-finalized-on? true}}]))]]]))))
 
 (defmethod page :route.user/my-purchases []
   [user-purchases

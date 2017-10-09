@@ -65,6 +65,13 @@
   {:buy-now-offering "Buy Now"
    :auction-offering "Auction"})
 
+(def offering-status->text
+  {:offering.status/emergency "Emergency Cancel"
+   :offering.status/active "Active"
+   :offering.status/finalized "Completed"
+   :offering.status/missing-ownership "Missing Ownership"
+   :offering.status/auction-ended "Auction Ended"})
+
 (defn get-ens-record-name [db node]
   (get-in db [:ens/records node :ens.record/name]))
 

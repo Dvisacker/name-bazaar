@@ -261,21 +261,27 @@ h4, h5, h6 {
       white-space: nowrap;
     }
 
-    .ui.sub.header.offering-type {
-      font-size: 9.5px;
-      line-height: 2.3;
-      padding-left: 20px;
-      background-repeat: no-repeat;
+    .ui.sub.header {
+      justify-content: center;
 
-      &.buy-now-offering {
-        background-image: url(../images/buy-now-icon.png);
-        background-size: 12px auto;
+      & > .offering-type {
+        font-size: 9.5px;
+        line-height: 2.3;
+        padding-left: 20px;
+        background-repeat: no-repeat;
+
+
+        &.buy-now-offering {
+          background-image: url(../images/buy-now-icon.png);
+          background-size: 12px auto;
+        }
+
+        &.auction-offering {
+          background-image: url(../images/auction-icon.png);
+          background-size: 14px auto;
+        }
       }
 
-      &.auction-offering {
-        background-image: url(../images/auction-icon.png);
-        background-size: 14px auto;
-      }
     }
 
     .offering-auction-item {
@@ -294,6 +300,15 @@ h4, h5, h6 {
         }
       }
     }
+    .tags {
+      display: flex;
+    }
+    .column.price-column {
+      display: flex !important;
+      justify-content: flex-end;
+      align-items: center;
+      flex-direction: row !important;
+    }
   }
 
   &.mobile {
@@ -301,6 +316,7 @@ h4, h5, h6 {
     padding: 12px;
     padding-right: 0;
     text-align: left;
+    @delimiterBorder: 1px solid fade(@lightBrown, 7);
 
     .search-results-list-item-header {
       display: flex;
@@ -312,18 +328,23 @@ h4, h5, h6 {
       }
       .left-section {
         flex-grow: 1;
-        border-right: 1px solid fade(@lightBrown, 7);
+        border-right: @delimiterBorder;
         overflow: hidden;
       }
       .right-section {
         display: flex;
         opacity: 0;
         will-change: opacity;
+        align-items: center;
       }
       .offering-main-text, .offering-price {
         line-height: 1.2;
         font-weight: 300;
         padding-right: 3px;
+      }
+
+      .ui.sub.header {
+        justify-content: flex-start;
       }
 
       .offering-auction-item, .offering-buy-now-item {
@@ -333,7 +354,7 @@ h4, h5, h6 {
 
       .offering-auction-item.time-left {
         padding-top: 0;
-        border-left: 1px solid fade(@lightBrown, 7);
+        border-left: @delimiterBorder;
       }
 
       .offering-auction-item {
@@ -356,6 +377,19 @@ h4, h5, h6 {
           background-color: #f0f4fb;
           width: auto;
           padding: 10px 16px;
+        }
+      }
+      .tags {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        border-right: @delimiterBorder;
+        height: 55px;
+        .offering-tag {
+          padding: 0 10px;
+          line-height: 22px;
+          margin: 1px 7px;
+          background-image: none;
         }
       }
     }
@@ -748,58 +782,8 @@ h4, h5, h6 {
           }
         }
       }
-      .chips {
+      .tags {
         margin-bottom: @segmentGutterMobile;
-        .offering-chip {
-          border-radius: 20px;
-          border: 1px solid #000;
-          display: inline-block;
-          padding: 0 15px 0 37px;
-          font-size: 12px;
-          line-height: 30px;
-          background: no-repeat 13px 50%;
-          margin-right: 14px;
-          &.offering-status {
-            &.active {
-              border-color: @green;
-              color: @green;
-              background-image: url(../images/active-icon-green.png);
-            }
-            &.missing-ownership {
-              border-color: @pink;
-              color: @pink;
-              background-image: url(../images/missing-ownership-icon-pink.png);
-            }
-            &.finalized {
-              border-color: @cyan;
-              color: @cyan;
-              background-image: url(../images/finalized-icon-cyan.png);
-            }
-            &.auction-ended {
-              border-color: @orange;
-              color: @orange;
-              background-image: url(../images/auction-ended-icon-orange.png);
-            }
-            &.emergency {
-              border-color: @red;
-              color: @red;
-              background-image: url(../images/emergency-icon-red.png);
-            }
-          }
-          &.offering-type {
-            &.auction-offering {
-              border-color: @purple;
-              color: @purple;
-              background-image: url(../images/auction-icon-purple.png);
-            }
-            &.buy-now-offering {
-              border-color: @lightBlue;
-              color: @lightBlue;
-              background-image: url(../images/buy-now-icon-blue.png);
-              background-size: auto 18px;
-            }
-          }
-        }
       }
       @media only screen and (max-width: @tabletBreakpoint) {
         .links-section {
@@ -807,6 +791,75 @@ h4, h5, h6 {
         }
       }
     }
+  }
+}
+
+.offering-tag {
+  border-radius: 20px;
+  border: 1px solid #000;
+  display: inline-block;
+  padding: 0 15px 0 15px;
+  font-size: 12px;
+  line-height: 30px;
+  background: no-repeat 13px 50%;
+  margin-right: 14px;
+  @iconTagPaddingLeft: 37px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  &.offering-status {
+    padding-left: @iconTagPaddingLeft;
+    &.active {
+      border-color: @green;
+      color: @green;
+      background-image: url(../images/active-icon-green.png);
+    }
+    &.missing-ownership {
+      border-color: @pink;
+      color: @pink;
+      background-image: url(../images/missing-ownership-icon-pink.png);
+    }
+    &.finalized {
+      border-color: @cyan;
+      color: @cyan;
+      background-image: url(../images/finalized-icon-cyan.png);
+    }
+    &.auction-ended {
+      border-color: @orange;
+      color: @orange;
+      background-image: url(../images/auction-ended-icon-orange.png);
+    }
+    &.emergency {
+      border-color: @red;
+      color: @red;
+      background-image: url(../images/emergency-icon-red.png);
+    }
+  }
+  &.offering-type {
+    padding-left: @iconTagPaddingLeft;
+    &.auction-offering {
+      border-color: @purple;
+      color: @purple;
+      background-image: url(../images/auction-icon-purple.png);
+    }
+    &.buy-now-offering {
+      border-color: @lightBlue;
+      color: @lightBlue;
+      background-image: url(../images/buy-now-icon-blue.png);
+      background-size: auto 18px;
+    }
+  }
+  &.auction-winning {
+    border-color: @green;
+    color: @green;
+  }
+  &.pending-returns {
+    border-color: @red;
+    color: @red;
+  }
+  &.sold {
+    border-color: @lightBlue;
+    color: @lightBlue;
   }
 }
 
@@ -841,6 +894,7 @@ h4, h5, h6 {
     padding-bottom: 25px;
     font-size: 20px;
     text-align: center;
+    justify-content: center;
   }
   .input-section {
     display: flex;
@@ -872,16 +926,37 @@ h4, h5, h6 {
     }
   }
 
-  & > .infinite-list {
+  .infinite-list-container {
+    width: 100%;
+    .ui.grid.list-header {
+      padding: @segmentGutter;
+      padding-bottom: 0;
+      font-size: 12px;
+      @media only screen and (max-width: @largestMobileScreen) {
+        display: none;
+      }
+      & > .row {
+        background-color: #fbfcfe;
+        border-top: 1px solid @borderColor;
+        border-bottom: 1px solid @borderColor;
+      }
+    }
+    .infinite-list {
+      padding-top: 0 !important;
+    }
+  }
+
+  .infinite-list {
+    width: 100%;
     padding: @segmentGutter;
     @media only screen and (max-width: @largestMobileScreen) {
       padding: 0;
     }
     &.primary {
-      min-height: 1000px;
+      min-height: 800px;
     }
     &.secondary {
-      min-height: 400px;
+      min-height: 300px;
     }
   }
 
@@ -930,17 +1005,62 @@ h4, h5, h6 {
   }
 }
 
+.infinite-list-scroll-to-top-sticky {
+  & > * {
+    z-index: 999;
+  }
+  .infinite-list-scroll-to-top {
+    opacity: 0;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: opacity;
+    transition: opacity 250ms ease-in;
+    text-align: center;
+    background: fade(#FFF, 80);
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 18%,rgba(255,255,255,0) 99%,rgba(255,255,255,0) 100%);
+    height: 30px;
+    @media only screen and (max-width: @largestMobileScreen) {
+      height: 50px;
+    }
+    cursor: pointer;
+    &.stuck {
+      opacity: 1;
+    }
+  }
+}
+
+.no-items-text {
+  padding: @segmentGutter;
+  color: @grey;
+  font-size: 13px;
+}
+
 .ui.grid {
   & > .row.hide-divider, & > .row > .column.hide-divider {
-    box-shadow: none;
+    box-shadow: none !important;
   }
-  & > .row > .column {
+  & > .row, & > .row > .column, & > .column  {
     &.join-upper {
       padding-top: 0 !important;
     }
     &.mobile-join-upper {
       @media only screen and (max-width: @largestMobileScreen) {
-        padding-top: 0;
+        padding-top: 0 !important;
+      }
+    }
+  }
+  &.no-inner-horizontal-padding {
+    & > .row > .column {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+  &.mobile-inner-vertical-padding {
+    @media only screen and (max-width: @largestMobileScreen) {
+      & > .row > .column {
+        padding-bottom: @segmentGutterMobile;
       }
     }
   }
@@ -990,6 +1110,36 @@ h4, h5, h6 {
     &.reset-filter {
       background: url(../images/filter-icon-purple.png) no-repeat top center;
       background-size: contain;
+    }
+  }
+}
+
+.share-buttons {
+  display: flex;
+  align-items: center;
+  .title {
+    text-transform: uppercase;
+    font-size: 11px;
+    color: @darkBlueText;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  .share-button {
+    border: 1px solid @purple;
+    border-radius: 100%;
+    width: 25px;
+    height: 25px;
+    margin-right: 7px;
+    cursor: pointer;
+    background-position: center;
+    background-repeat: no-repeat;
+    &.facebook {
+      background-image: url(../images/facebook-icon-purple.png);
+      background-size: auto 12px;
+    }
+    &.twitter {
+      background-image: url(../images/twitter-icon-purple.png);
+      background-size: auto 10px;
     }
   }
 }

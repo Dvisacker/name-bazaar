@@ -1,10 +1,10 @@
 (ns name-bazaar.ui.components.offering.general-info
   (:require
     [clojure.string :as string]
-    [district0x.shared.utils :as d0x-shared-utils :refer [epoch->long empty-address?]]
+    [district0x.shared.utils :refer [epoch->long empty-address?]]
     [district0x.ui.components.misc :refer [etherscan-link]]
     [district0x.ui.components.text-field :refer [ether-field-with-currency]]
-    [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code format-time-duration-units format-local-datetime time-ago]]
+    [district0x.ui.utils :refer [format-time-duration-units format-eth-with-code format-time-duration-units format-local-datetime time-ago]]
     [name-bazaar.ui.utils :refer [path-for]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]))
@@ -21,10 +21,11 @@
 (defn offering-new-owner-line [{:keys [:offering/new-owner :offering/address]}]
   (let [active-address-new-owner? @(subscribe [:offering/active-address-new-owner? address])]
     [:div.ellipsis
-     {:class (when active-address-new-owner? :purple)}
-     "Purchased by"
-     (when active-address-new-owner? " you")
-     ": "
+     [:span
+      {:class (when active-address-new-owner? :purple)}
+      "Purchased by"
+      (when active-address-new-owner? " you")
+      ": "]
      [:a
       {:href (path-for :route.user/purchases {:user/address new-owner})}
       new-owner]]))
@@ -94,7 +95,7 @@
        [:div "Min. Bid Increase: " (format-eth-with-code min-bid-increase)])
      (when auction?
        [:div "Time Extension: "
-        (d0x-ui-utils/format-time-duration-units (epoch->long extension-duration))])
+        (format-time-duration-units (epoch->long extension-duration))])
      (when (and auction? (not finalized-on))
        [auction-offering-winning-bidder-line
         {:auction-offering/winning-bidder winning-bidder}])

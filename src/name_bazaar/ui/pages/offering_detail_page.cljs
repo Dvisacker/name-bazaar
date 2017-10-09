@@ -15,7 +15,6 @@
     [name-bazaar.ui.components.offering.bottom-section :refer [offering-bottom-section]]
     [name-bazaar.ui.components.offering.general-info :refer [offering-general-info]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
-    [name-bazaar.ui.components.offering.warnings :refer [non-ascii-characters-warning missing-ownership-warning sub-level-name-warning]]
     [name-bazaar.ui.components.search-results.infinite-list :refer [search-results-infinite-list]]
     [name-bazaar.ui.constants :as constants]
     [name-bazaar.ui.styles :as styles]
@@ -116,7 +115,7 @@
         [ui/GridColumn
          {:mobile 16
           :computer 8}
-         [:div.chips
+         [:div.tags
           [offering-status-chip]
           [offering-type-chip]]
          [:div

@@ -1,7 +1,7 @@
 (ns name-bazaar.ui.components.offering.bottom-section
   (:require
     [district0x.ui.components.input :refer [token-input]]
-    [district0x.ui.components.misc :as d0x-misc :refer [page]]
+    [district0x.ui.components.misc :refer [page]]
     [district0x.ui.components.transaction-button :refer [transaction-button]]
     [name-bazaar.ui.components.offering.auction-finalize-button :refer [auction-finalize-button]]
     [name-bazaar.ui.utils :refer [namehash sha3 path-for]]

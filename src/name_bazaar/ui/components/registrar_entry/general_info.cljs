@@ -1,12 +1,9 @@
 (ns name-bazaar.ui.components.registrar-entry.general-info
   (:require
-    [cljs-react-material-ui.reagent :as ui]
     [district0x.shared.utils :refer [zero-address?]]
-    [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col etherscan-link]]
+    [district0x.ui.components.misc :refer [etherscan-link]]
     [district0x.ui.utils :refer [format-local-datetime format-eth-with-code]]
-    [name-bazaar.ui.components.misc :refer [a]]
-    [name-bazaar.ui.styles :as styles]
-    [name-bazaar.ui.utils :refer [namehash name->label-hash registrar-entry-state->text]]
+    [name-bazaar.ui.utils :refer [name->label-hash registrar-entry-state->text]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]))
 
@@ -20,11 +17,9 @@
      (dissoc props :ens.record/name)
      [:div [:b "Registrar Information"]]
      [:div "Status: " (registrar-entry-state->text state)]
-     [:div
-      {:style styles/text-overflow-ellipsis}
+     [:div.ellipsis
       "Registration Date: " (format-local-datetime registration-date)]
-     [:div
-      {:style styles/text-overflow-ellipsis}
+     [:div.ellipsis
       "Winning Deed: " (if (zero-address? address)
                          "none"
                          [etherscan-link {:address address}])]

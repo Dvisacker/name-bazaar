@@ -51,7 +51,7 @@
 @h6: 9px;
 @headerBottomMargin: 25px;
 //@solidInternalBorderColor: fade(@lightBrown, 15);
-@borderColor: lighten(@lightBrown, 15);
+@borderColor: fade(@lightBrown, 15);
 @focusedFormMutedBorderColor: @borderColor;
 @inputBorderColor: fade(@lightBrown, 30);
 @inputBorder: 1px solid @inputBorderColor;

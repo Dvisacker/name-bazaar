@@ -3,10 +3,7 @@
     [district0x.ui.components.active-address-balance :refer [active-address-balance]]
     [district0x.ui.components.active-address-select :refer [active-address-select]]
     [district0x.ui.components.transaction-log :refer [transaction-log]]
-    [district0x.ui.utils :refer [current-component-mui-theme]]
     [name-bazaar.ui.components.app-bar-search :refer [app-bar-search]]
-    [name-bazaar.ui.constants :as constants]
-    [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [offerings-newest-url offerings-most-active-url offerings-ending-soon-url path-for]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]
@@ -126,13 +123,14 @@
          {:style {:overflow-y :scroll}}
          [side-nav-menu-logo]
          (doall
-           (for [{:keys [:text :route :href :class]} nav-menu-items-props]
+           (for [{:keys [:text :route :href :class :on-click]} nav-menu-items-props]
              (let [href (or href (path-for route))]
                [ui/MenuItem
                 {:key text
                  :as "a"
                  :href href
                  :class class
+                 :on-click #(dispatch [:district0x.window/scroll-to-top])
                  :active (= (str "#" (:path @active-page)) href)}
                 text])))
          [district0x-banner]]]
@@ -150,41 +148,4 @@
                  :large-screen 12
                  :tablet 14
                  :mobile 15}]
-               children)]]]
-
-      #_[ui/SidebarPushable
-         {:class :app-container}
-         [ui/Sidebar
-          {:as (aget js/semanticUIReact "Menu")
-           :visible (or @drawer-open? @min-computer-screen?)
-           :animation "overlay"
-           :vertical true
-           :inverted true
-           :fixed :left}
-          [side-nav-menu-logo]
-          (doall
-            (for [{:keys [:text :route :href :class]} nav-menu-items-props]
-              (let [href (or href (path-for route))]
-                [ui/MenuItem
-                 {:key text
-                  :as "a"
-                  :href href
-                  :class class
-                  :active (= (str "#" (:path @active-page)) href)}
-                 text])))
-          [district0x-banner]]
-         [ui/SidebarPusher
-          {:on-click (fn []
-                       (when-not @min-computer-screen?
-                         (dispatch [:district0x.menu-drawer/set false])))}
-          [app-bar]
-          [ui/Grid
-           {:columns 1
-            :centered true}
-           (into [ui/GridColumn
-                  {:class :main-content
-                   :widescreen 8
-                   :large-screen 12
-                   :tablet 14
-                   :mobile 15}]
-                 children)]]])))
+               children)]]])))

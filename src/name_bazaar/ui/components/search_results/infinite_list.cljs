@@ -19,6 +19,6 @@
           :loading-spinner-delegate (r/as-element (if @mobile?
                                                     [offering-list-item-header-mobile]
                                                     [offering-list-item-header]))
-          :no-items-element (r/as-element [:div no-items-text])}
-         (dissoc props :no-items-text))
+          :no-items-element (r/as-element [:div.no-items-text no-items-text])}
+         (dissoc props :no-items-text :list-header))
        list-items])))

@@ -1,6 +1,5 @@
 (ns name-bazaar.ui.components.add-to-watched-names-button
   (:require
-    [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [namehash]]
     [re-frame.core :refer [subscribe dispatch]]))
 

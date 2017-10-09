@@ -19,6 +19,8 @@
 
 (defonce event-filters (atom []))
 
+
+
 (defn node-owner? [server-state offering-address {:keys [:offering/name :offering/node] :as offering}]
   (let [ch (chan)]
     (go

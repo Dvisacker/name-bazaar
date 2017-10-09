@@ -1,6 +1,5 @@
 (ns name-bazaar.ui.components.ens-name-details
   (:require
-
     [clojure.string :as string]
     [district0x.ui.components.transaction-button :refer [transaction-button]]
     [name-bazaar.shared.utils :refer [top-level-name?]]

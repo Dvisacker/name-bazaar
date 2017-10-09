@@ -1,5 +1,6 @@
 (ns name-bazaar.ui.components.offering.middle-section
   (:require
+    [clojure.string :as string]
     [district0x.ui.components.input :refer [token-input]]
     [district0x.ui.components.misc :as d0x-misc :refer [page]]
     [district0x.ui.components.transaction-button :refer [transaction-button]]
@@ -9,8 +10,7 @@
     [name-bazaar.ui.utils :refer [namehash sha3 path-for]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]
-    [soda-ash.core :as ui]
-    [clojure.string :as string]))
+    [soda-ash.core :as ui]))
 
 (defn auction-bid-info [{:keys [:offering]}]
   (let [{:keys [:offering/address]} offering
@@ -85,7 +85,10 @@
         show-auction-bid-info? (and auction? (not active-address-owner?))]
     (when (or show-auction-bid-info? missing-ownership? (not top-level-name?) contains-non-ascii?)
       [ui/GridColumn
-       {:text-align :center}
+       {:text-align :center
+        :computer 10
+        :tablet 12
+        :mobile 16}
        (when missing-ownership?
          [missing-ownership-warning
           {:offering offering}])

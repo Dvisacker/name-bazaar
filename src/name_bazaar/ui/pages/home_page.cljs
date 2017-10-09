@@ -5,7 +5,6 @@
     [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col center-layout paper page]]
     [district0x.ui.utils :refer [format-eth-with-code path-for]]
     [medley.core :as medley]
-    [name-bazaar.ui.components.icons :as icons]
     [name-bazaar.ui.components.misc :as misc :refer [a]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.constants :as constants]

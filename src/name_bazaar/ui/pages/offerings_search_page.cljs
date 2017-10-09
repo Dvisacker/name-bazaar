@@ -6,6 +6,7 @@
     [medley.core :as medley]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.keyword-position-select :refer [keyword-position-select]]
+    [name-bazaar.ui.components.offering.infinite-list :refer [offering-infinite-list]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.components.offering.offering-type-select :refer [offering-type-select]]
     [name-bazaar.ui.components.offering.offerings-order-by-select :refer [offerings-order-by-select]]
@@ -190,7 +191,7 @@
     (fn []
       [offerings-order-by-select
        {:fluid true
-        :order-by-column (first (:order-by-columns @search-params))
+         :order-by-column (first (:order-by-columns @search-params))
         :order-by-dir (first (:order-by-dirs @search-params))
         :options [:offering.order-by/newest
                   :offering.order-by/most-active
@@ -199,10 +200,10 @@
                   :offering.order-by/ending-soon
                   :offering.order-by/most-relevant]
         :on-change (fn [e data]
-                     (let [[order-by-columns order-by-dirs] (aget data "value")]
+                     (let [[order-by-column order-by-dir] (aget data "value")]
                        (dispatch [:district0x.location/add-to-query
-                                  {:order-by-columns [(name order-by-columns)]
-                                   :order-by-dirs [(name order-by-dirs)]}])))}])))
+                                  {:order-by-columns [(name order-by-column)]
+                                   :order-by-dirs [(name order-by-dir)]}])))}])))
 
 (defn search-params-panel []
   (let [open? (r/atom false)
@@ -325,11 +326,12 @@
             "Show Advanced Options ▾"]])]])))
 
 (defn offerings-search-results []
-  (let [search-results (subscribe [:offerings/main-search])]
+  (let [search-results (subscribe [:offerings/main-search])
+        c (r/atom nil)]
     (fn []
       (let [{:keys [:items :loading? :params :total-count]} @search-results]
         [ui/Segment
-         [search-results-infinite-list
+         [offering-infinite-list
           {:class "primary"
            :total-count total-count
            :offset (:offset params)

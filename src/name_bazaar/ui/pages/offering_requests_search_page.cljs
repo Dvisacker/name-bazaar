@@ -8,7 +8,6 @@
     [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code]]
     [medley.core :as medley]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
-    [name-bazaar.ui.components.icons :as icons]
     [name-bazaar.ui.components.keyword-position-select :refer [keyword-position-select]]
     [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering-request.list-item :refer [offering-request-list-item]]
@@ -26,7 +25,7 @@
       [input
        {:label "Keyword"
         :fluid true
-        :value (print.foo/look (:name @search-params))
+        :value (:name @search-params)
         :on-change #(dispatch [:district0x.location/add-to-query {:name (aget %2 "value")}])}])))
 
 (defn offering-requests-keyword-position-select []
@@ -52,8 +51,7 @@
        :computer 6
        :tablet 6
        :mobile 16}
-      [offering-requests-keyword-position-select]]]
-    ]])
+      [offering-requests-keyword-position-select]]]]])
 
 (defn offering-requests-search-results []
   (let [search-results (subscribe [:offering-requests/main-search])]

@@ -1,21 +1,14 @@
 (ns name-bazaar.ui.pages.watched-names-page
   (:require
-    [cljs-react-material-ui.reagent :as mui]
     [district0x.ui.components.misc :as misc :refer [page]]
-    [district0x.ui.components.text-field :refer [text-field-with-suffix]]
-    [district0x.ui.utils :refer [current-component-mui-theme]]
     [medley.core :as medley]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
-    [name-bazaar.ui.components.ens-name-details :refer [ens-name-details]]
     [name-bazaar.ui.components.ens-record.ens-name-input :refer [ens-name-input]]
-    [name-bazaar.ui.components.icons :as icons]
     [name-bazaar.ui.components.infinite-list :refer [infinite-list expandable-list-item]]
-    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering-request.list-item :refer [offering-request-list-item]]
+    [name-bazaar.ui.components.offering.list-header :refer [offering-list-header]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
-    [name-bazaar.ui.components.search-results.infinite-list :refer [search-results-infinite-list]]
     [name-bazaar.ui.constants :as constants]
-    [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [valid-ens-name?]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]
@@ -61,27 +54,29 @@
   (let [mobile? (subscribe [:district0x.screen-size/mobile?])
         watched-items (subscribe [:watched-names/watched-items])]
     (fn []
-      [infinite-list
-       {:collapsed-item-height (constants/infinite-list-collapsed-item-height @mobile?)
-        :total-count (count @watched-items)
-        :no-items-element (r/as-element [:div "You are not watching any names"])}
-       (doall
-         (for [{:keys [:ens.record/node] :as watched-item} @watched-items]
-           (cond
-             (:offering/address watched-item)
-             [offering-list-item
-              {:key node
-               :offering watched-item}]
+      [:div.infinite-list-container
+       [offering-list-header]
+       [infinite-list
+        {:collapsed-item-height (constants/infinite-list-collapsed-item-height @mobile?)
+         :total-count (count @watched-items)
+         :no-items-element (r/as-element [:div "You are not watching any names"])}
+        (doall
+          (for [{:keys [:ens.record/node] :as watched-item} @watched-items]
+            (cond
+              (:offering/address watched-item)
+              [offering-list-item
+               {:key node
+                :offering watched-item}]
 
-             (:offering-request/requesters-count watched-item)
-             [offering-request-list-item
-              {:key node
-               :offering-request watched-item}]
+              (:offering-request/requesters-count watched-item)
+              [offering-request-list-item
+               {:key node
+                :offering-request watched-item}]
 
-             :else
-             [watch-item-placeholder
-              {:key node
-               :watched-name watched-item}])))])))
+              :else
+              [watch-item-placeholder
+               {:key node
+                :watched-name watched-item}])))]])))
 
 (defmethod page :route/watched-names []
   [app-layout
@@ -104,5 +99,4 @@
         {:on-click #(dispatch [:watched-names/remove-all])}
         "Clear All"]]]
      [ui/GridRow
-      [ui/GridColumn
-       [watched-names-infinite-list]]]]]])
+      [watched-names-infinite-list]]]]])

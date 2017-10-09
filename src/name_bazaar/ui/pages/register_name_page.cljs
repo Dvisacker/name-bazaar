@@ -17,7 +17,8 @@
        [ui/GridRow
         [ui/GridColumn
          {:mobile 16
-          :computer 8}
+          :tablet 8
+          :computer 6}
          [ens-name-input
           {:label "Name"
            :fluid true

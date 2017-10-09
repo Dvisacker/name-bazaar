@@ -1,14 +1,11 @@
 (ns name-bazaar.ui.components.offering-request.list-item
   (:require
     [clojure.string :as string]
-    [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col]]
-    [district0x.ui.utils :as d0x-ui-utils :refer [pluralize]]
+    [district0x.ui.utils :refer [pluralize]]
     [name-bazaar.ui.components.ens-name-details :refer [ens-name-details]]
     [name-bazaar.ui.components.infinite-list :refer [expandable-list-item]]
     [name-bazaar.ui.components.loading-placeholders :refer [list-item-placeholder]]
-    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.constants :as constants]
-    [name-bazaar.ui.styles :as styles]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]
     [soda-ash.core :as ui]))

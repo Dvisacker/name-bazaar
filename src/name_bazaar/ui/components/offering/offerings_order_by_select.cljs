@@ -1,8 +1,6 @@
 (ns name-bazaar.ui.components.offering.offerings-order-by-select
   (:require
-    [cljs-react-material-ui.reagent :as mui]
     [clojure.set :as set]
-    [name-bazaar.ui.styles :as styles]
     [reagent.core :as r]
     [soda-ash.core :as ui]))
 
@@ -39,20 +37,4 @@
                    (aset data "value" (order-option->value (keyword :offering.order-by (aget data "value"))))
                    (when (fn? on-change)
                      (on-change e data)))}
-     (dissoc props :options :order-by-column :order-by-dir :value :on-change))]
-
-  #_[mui/select-field
-     (r/merge-props
-       {:floating-label-text "Order By"
-        :floating-label-style {:left 0}
-        :value (str [order-by-column order-by-dir])}
-       (merge
-         (dissoc props :options :order-by-column :order-by-dir :value-key)
-         {:on-change (fn [e index]
-                       (let [[order-by-column order-by-dir] (first (nth options-vals index))]
-                         (on-change order-by-column order-by-dir)))}))
-     (for [[val text] options-vals]
-       [mui/menu-item
-        {:key (str val)                                     ; hack, because material-ui selectfield
-         :value (str val)                                   ; doesn't support non-primitive values
-         :primary-text text}])])
+     (dissoc props :options :order-by-column :order-by-dir :value :on-change))])
