@@ -1,23 +1,19 @@
 (ns name-bazaar.ui.pages.offering-create-page
   (:require
-    [cljs-react-material-ui.reagent :as mui]
     [cljs-time.coerce :as time-coerce :refer [to-epoch to-date from-date]]
     [cljs-time.core :as t]
     [district0x.shared.utils :refer [pos-ether-value?]]
     [district0x.ui.components.input :refer [input token-input]]
-    [district0x.ui.components.misc :as misc :refer [row row-with-cols col paper page]]
-    [district0x.ui.components.text-field :refer [text-field-with-suffix ether-field-with-currency]]
+    [district0x.ui.components.misc :refer [page]]
     [district0x.ui.components.transaction-button :refer [transaction-button]]
-    [district0x.ui.utils :as d0x-ui-utils :refer [current-component-mui-theme date+time->local-date-time]]
+    [district0x.ui.utils :refer [date+time->local-date-time format-time-duration-units]]
     [name-bazaar.shared.utils :refer [top-level-name?]]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.date-picker :refer [date-picker]]
     [name-bazaar.ui.components.ens-record.ens-name-input :refer [ens-name-input]]
     [name-bazaar.ui.components.loading-placeholders :refer [content-placeholder]]
-    [name-bazaar.ui.components.misc :refer [a]]
     [name-bazaar.ui.components.offering.offering-type-select :refer [offering-type-select]]
     [name-bazaar.ui.constants :as constants]
-    [name-bazaar.ui.styles :as styles]
     [name-bazaar.ui.utils :refer [namehash sha3 strip-eth-suffix valid-ens-name? path-for]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]
@@ -98,7 +94,7 @@
   (/ seconds 3600))
 
 (defn offering-extension-duration-slider [{:keys [:value] :as props}]
-  (let [duration-formatted (d0x-ui-utils/format-time-duration-units (hours->milis value))]
+  (let [duration-formatted (format-time-duration-units (hours->milis value))]
     [:div
      [:h5.sub.heading "Time Extension"]
      [:input.extension-duration-slider
@@ -242,10 +238,9 @@
                   "You will be able to edit parameters of this auction as long as there are no bids."
                   "You will be able to edit offering price even after creation.")]
                [:div.input-info
-                {:style styles/margin-top-gutter-less}
                 [:b "IMPORTANT:"] " After you create offering contract, you will need to transfer name ownership into it "
                 "in order to display it in search and for others being able to buy it. You will be notified once the contract "
-                "is ready, or you can do it from " [a {:route :route.user/my-offerings} "My Offerings"] " page later."]])])
+                "is ready, or you can do it from " [:a {:href (path-for :route.user/my-offerings)} "My Offerings"] " page later."]])])
          [ui/GridRow
           {:centered true}
           [:div

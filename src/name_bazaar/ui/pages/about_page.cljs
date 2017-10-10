@@ -1,6 +1,6 @@
 (ns name-bazaar.ui.pages.about-page
   (:require
-    [district0x.ui.components.misc :as misc :refer [page]]
+    [district0x.ui.components.misc :refer [page]]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [soda-ash.core :as ui]))
 

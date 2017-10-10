@@ -84,7 +84,6 @@
 (defn- contains-tx-status? [tx-statuses {:keys [:status]}]
   (contains? tx-statuses status))
 
-
 (reg-event-fx
   :district0x/initialize
   [interceptors (inject-cofx :localstorage) (inject-cofx :current-url)]

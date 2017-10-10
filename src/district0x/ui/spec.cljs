@@ -16,12 +16,11 @@
                                                                  :route/query-params
                                                                  :route/path]))
 (s/def :db/window-width-size int?)
-(s/def :snackbar/open? boolean?)
 (s/def :drawer/open? boolean?)
+(s/def :snackbar/open? boolean?)
 (s/def :snackbar/message string?)
-(s/def :snackbar/on-request-close fn?)
-(s/def :snackbar/auto-hide-duration int?)
-(s/def :db/snackbar (s/keys :req-un [:snackbar/open? :snackbar/message :snackbar/on-request-close :snackbar/auto-hide-duration]))
+(s/def :snackbar/action-href string?)
+(s/def :db/snackbar (s/keys :req-un [:snackbar/open? :snackbar/message :snackbar/action-href]))
 (s/def :db/drawer (s/keys :req-un [:drawer/open?]))
 (s/def :db/menu-drawer :db/drawer)
 

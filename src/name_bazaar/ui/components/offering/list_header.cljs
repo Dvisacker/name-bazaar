@@ -6,8 +6,9 @@
 
 (defn offering-list-header []
   (let [mobile? (subscribe [:district0x.screen-size/mobile?])]
-    (fn [{:keys [:show-time-ago?]}]
+    (fn [{:keys [:show-time-ago?] :as props}]
       [:div.ui.grid.padded.search-results-list-item.list-header.opacity-1
+       (dissoc props :show-time-ago?)
        [ui/GridRow
         {:style {:height (constants/infinite-list-collapsed-item-height @mobile?)}
          :vertical-align :middle}

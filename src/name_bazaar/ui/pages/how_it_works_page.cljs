@@ -1,14 +1,11 @@
 (ns name-bazaar.ui.pages.how-it-works-page
   (:require
-    [district0x.ui.components.misc :as misc :refer [row row-with-cols col paper page]]
+    [district0x.ui.components.misc :refer [page]]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
-    [name-bazaar.ui.components.misc :refer [a]]
-    [name-bazaar.ui.styles :as styles]))
+    [soda-ash.core :as ui]))
 
 (defmethod page :route/how-it-works []
   [app-layout
-   [paper
-    [:h1
-     {:style styles/page-headline}
-     "How it works"]
+   [ui/Segment
+    [:h1.ui.header.padded "About"]
     [:div "Enter text here"]]])

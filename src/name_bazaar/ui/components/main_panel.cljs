@@ -2,7 +2,7 @@
   (:require
     [clojure.set :as set]
     [district0x.ui.components.active-address-select :refer [active-address-select]]
-    [district0x.ui.components.misc :as misc :refer [row row-with-cols col center-layout paper page]]
+    [district0x.ui.components.misc :refer [page]]
     [medley.core :as medley]
     [name-bazaar.ui.constants :as constants]
     [name-bazaar.ui.pages.about-page]
@@ -19,7 +19,6 @@
     [name-bazaar.ui.pages.user-offerings-page]
     [name-bazaar.ui.pages.user-purchases-page]
     [name-bazaar.ui.pages.watched-names-page]
-    [name-bazaar.ui.styles :as styles]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]))
 
@@ -27,6 +26,4 @@
   (let [active-page (subscribe [:district0x/active-page])]
     (fn []
       (let [{:keys [:handler]} @active-page]
-        [misc/main-panel
-         {:mui-theme styles/mui-theme}
-         ^{:key handler} [page handler]]))))
+        ^{:key handler} [page handler]))))

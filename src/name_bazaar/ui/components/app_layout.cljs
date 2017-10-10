@@ -2,6 +2,7 @@
   (:require
     [district0x.ui.components.active-address-balance :refer [active-address-balance]]
     [district0x.ui.components.active-address-select :refer [active-address-select]]
+    [district0x.ui.components.snackbar :refer [snackbar]]
     [district0x.ui.components.transaction-log :refer [transaction-log]]
     [name-bazaar.ui.components.app-bar-search :refer [app-bar-search]]
     [name-bazaar.ui.utils :refer [offerings-newest-url offerings-most-active-url offerings-ending-soon-url path-for]]
@@ -68,50 +69,32 @@
                             :class :about}])
 
 (defn app-bar []
-  [ui/Grid
-   {:class :app-bar
-    :columns 3
-    :vertical-align :middle
-    :padded true}
-   [ui/GridColumn
-    {:class :left-section
-     :widescreen 2
-     :large-screen 4
-     :computer 4
-     :tablet 1
-     :mobile 2
-     :vertical-align :middle}
-    [active-address-select]
-    [:div.sidebar-toggle
-     {:on-click (fn [e]
-                  (dispatch [:district0x.menu-drawer/set true])
-                  (.stopPropagation e))}]]
-   [ui/GridColumn
-    {:class :middle-section
-     :widescreen 12
-     :large-screen 8
-     :computer 8
-     :tablet 15
-     :mobile 14
-     :text-align :center
-     :vertical-align :middle}
-    [app-bar-search]]
-   [ui/GridColumn
-    {:class :right-section
-     :widescreen 2
-     :large-screen 4
-     :computer 4
-     :only "computer"
-     :text-align :center
-     :vertical-align :middle}
-    [active-address-balance]]])
+  (let [open? (subscribe [:district0x.transaction-log/open?])]
+    (fn []
+      [:div.app-bar
+       [:div.left-section
+        [active-address-select]
+        [:div.sidebar-toggle
+         {:on-click (fn [e]
+                      (dispatch [:district0x.menu-drawer/set true])
+                      (.stopPropagation e))}]]
+       [:div.middle-section
+        [app-bar-search]]
+       [:div.right-section
+        {:on-click #(dispatch [:district0x.transaction-log/set-open (not @open?)])}
+        [active-address-balance]
+        [:div.transaction-log-icon]]])))
 
 (defn app-layout []
   (let [drawer-open? (subscribe [:district0x/menu-drawer-open?])
         min-computer-screen? (subscribe [:district0x.screen-size/min-computer-screen?])
-        active-page (subscribe [:district0x/active-page])]
+        active-page (subscribe [:district0x/active-page])
+        app-container-ref (r/atom nil)]
     (fn [& children]
       [:div.app-container
+       {:ref (fn [el]
+               (when (and el (not @app-container-ref))
+                 (reset! app-container-ref el)))}
        [ui/Sidebar
         {:as (aget js/semanticUIReact "Menu")
          :visible (or @drawer-open? @min-computer-screen?)
@@ -139,13 +122,22 @@
                      (when-not @min-computer-screen?
                        (dispatch [:district0x.menu-drawer/set false])))}
         [app-bar]
+        [ui/Sticky
+         {:class :transaction-log-sticky
+          :context @app-container-ref}
+         [transaction-log
+          {:title-props {:on-click #(dispatch [:district0x.transaction-log/set-open false])}}]]
         [ui/Grid
          {:columns 1
-          :centered true}
+          :centered true
+          :padded true}
          (into [ui/GridColumn
                 {:class :main-content
                  :widescreen 8
                  :large-screen 12
                  :tablet 14
                  :mobile 15}]
-               children)]]])))
+               children)]]
+       [snackbar
+        {:action-button-props {:primary true
+                               :size :small}}]])))

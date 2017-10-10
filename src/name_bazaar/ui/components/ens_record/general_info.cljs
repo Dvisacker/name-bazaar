@@ -1,11 +1,8 @@
 (ns name-bazaar.ui.components.ens-record.general-info
   (:require
-    [cljs-react-material-ui.reagent :as ui]
     [district0x.shared.utils :refer [empty-address? zero-address?]]
-    [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col etherscan-link]]
-    [name-bazaar.ui.components.misc :refer [a]]
-    [name-bazaar.ui.styles :as styles]
-    [name-bazaar.ui.utils :refer [namehash]]
+    [district0x.ui.components.misc :refer [etherscan-link]]
+    [name-bazaar.ui.utils :refer [namehash path-for]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]))
 
@@ -17,8 +14,8 @@
      [:div.ellipsis
       "Owner: " (cond
                   (not (empty-address? owner))
-                  [a {:route :route.user/offerings
-                      :route-params {:user/address owner}}
+                  [:a
+                   {:href (path-for :route.user/offerings {:user/address owner})}
                    owner]
 
                   (zero-address? owner)

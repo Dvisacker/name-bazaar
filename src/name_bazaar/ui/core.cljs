@@ -2,8 +2,6 @@
   (:require
     [cljs-time.extend]
     [cljs.spec.alpha :as s]
-    [cljsjs.material-ui]
-    [cljsjs.react-flexbox-grid]
     [cljsjs.web3]
     [district0x.ui.events]
     [district0x.ui.subs]

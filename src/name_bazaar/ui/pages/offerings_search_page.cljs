@@ -2,7 +2,7 @@
   (:require
     [district0x.shared.utils :refer [non-neg-ether-value?]]
     [district0x.ui.components.input :refer [input]]
-    [district0x.ui.components.misc :as d0x-misc :refer [page]]
+    [district0x.ui.components.misc :refer [page]]
     [medley.core :as medley]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.keyword-position-select :refer [keyword-position-select]]

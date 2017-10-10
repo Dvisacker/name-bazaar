@@ -18,7 +18,9 @@
      [:div [:b "Registrar Information"]]
      [:div "Status: " (registrar-entry-state->text state)]
      [:div.ellipsis
-      "Registration Date: " (format-local-datetime registration-date)]
+      "Registration Date: " (if registration-date
+                              (format-local-datetime registration-date)
+                              "none")]
      [:div.ellipsis
       "Winning Deed: " (if (zero-address? address)
                          "none"

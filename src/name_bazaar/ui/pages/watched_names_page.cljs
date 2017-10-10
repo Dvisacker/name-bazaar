@@ -1,6 +1,6 @@
 (ns name-bazaar.ui.pages.watched-names-page
   (:require
-    [district0x.ui.components.misc :as misc :refer [page]]
+    [district0x.ui.components.misc :refer [page]]
     [medley.core :as medley]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]
     [name-bazaar.ui.components.ens-record.ens-name-input :refer [ens-name-input]]

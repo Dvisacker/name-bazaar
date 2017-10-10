@@ -3,7 +3,6 @@
     [clojure.string :as string]
     [district0x.shared.utils :refer [epoch->long empty-address?]]
     [district0x.ui.components.misc :refer [etherscan-link]]
-    [district0x.ui.components.text-field :refer [ether-field-with-currency]]
     [district0x.ui.utils :refer [format-time-duration-units format-eth-with-code format-time-duration-units format-local-datetime time-ago]]
     [name-bazaar.ui.utils :refer [path-for]]
     [re-frame.core :refer [subscribe dispatch]]

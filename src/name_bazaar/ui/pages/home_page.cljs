@@ -1,15 +1,12 @@
 (ns name-bazaar.ui.pages.home-page
   (:require
-    [cljs-react-material-ui.reagent :as mui]
     [clojure.string :as string]
-    [district0x.ui.components.misc :as d0x-misc :refer [row row-with-cols col center-layout paper page]]
-    [district0x.ui.utils :refer [format-eth-with-code path-for]]
+    [district0x.ui.components.misc :refer [page]]
+    [district0x.ui.utils :refer [format-eth-with-code]]
     [medley.core :as medley]
-    [name-bazaar.ui.components.misc :as misc :refer [a]]
     [name-bazaar.ui.components.offering.list-item :refer [offering-list-item]]
     [name-bazaar.ui.constants :as constants]
-    [name-bazaar.ui.styles :as styles]
-    [name-bazaar.ui.utils :refer [ensure-registrar-root offerings-newest-url offerings-most-active-url offerings-ending-soon-url valid-ens-name?]]
+    [name-bazaar.ui.utils :refer [ensure-registrar-root offerings-newest-url offerings-most-active-url offerings-ending-soon-url valid-ens-name? path-for]]
     [re-frame.core :refer [subscribe dispatch]]
     [reagent.core :as r]
     [soda-ash.core :as ui]))
@@ -33,7 +30,7 @@
     (fn []
       (let [{:keys [:items :loading?]} @search-results]
         [ui/Search
-         {:class "keyword-search"
+         {:class :keyword-search
           :value @search-name
           :show-no-results false
           :loading loading?
@@ -103,8 +100,8 @@
           [offerings-column props]])])))
 
 (defn namebazaar-logo []
-  [a
-   {:route :route/home}
+  [:a
+   {:href (path-for :route/home)}
    [:img.logo
     {:src "./images/logo@2x.png"}]])
 
@@ -121,11 +118,11 @@
      :mobile 16
      :text-align "center"}
     [:a.ui.button.app-page-button-link
-     {:href (path-for {:route :route.offerings/search :routes constants/routes})}
+     {:href (path-for :route.offerings/search)}
      "View Offerings"
      [:span.button-icon.view-offerings]]
     [:a.ui.button.app-page-button-link
-     {:href (path-for {:route :route.offerings/create :routes constants/routes})}
+     {:href (path-for :route.offerings/create)}
      "Create Offering"
      [:span.button-icon.create-offering]]]])
 

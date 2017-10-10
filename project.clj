@@ -6,7 +6,6 @@
   :dependencies [
                  ;[district0x "0.1.10"]
                  [cljs-http "0.1.43"]
-                 [cljs-react-material-ui "0.2.48"]
                  [cljs-web3 "0.19.0-0-5"]
                  [cljsjs/prop-types "15.5.10-0"]
                  [cljsjs/react "15.6.1-2"]
@@ -18,11 +17,10 @@
                  [day8.re-frame/forward-events-fx "0.0.5"]
                  [honeysql "0.9.0"]
                  [lein-doo "0.1.7"]
-                 [madvas/reagent-patched "0.8.0-alpha1"]
                  [medley "0.8.3"]
                  [org.clojure/clojurescript "1.9.854"]
                  [print-foo-cljs "2.0.3"]
-                 [re-frame "0.9.4" :exclusions [reagent]]
+                 [re-frame "0.9.4"]
                  [soda-ash "0.4.0"]
 
                  ;; d0xINFRA temporary here

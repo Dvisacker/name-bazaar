@@ -1,6 +1,6 @@
 (ns name-bazaar.ui.pages.user-bids-page
   (:require
-    [district0x.ui.components.misc :as misc :refer [page]]
+    [district0x.ui.components.misc :refer [page]]
     [district0x.ui.utils :refer [truncate]]
     [medley.core :as medley]
     [name-bazaar.ui.components.app-layout :refer [app-layout]]

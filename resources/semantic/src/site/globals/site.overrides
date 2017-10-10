@@ -219,6 +219,7 @@ h4, h5, h6 {
 }
 
 .main-content {
+  margin: 35px 0;
   @media only screen and (min-width: @computerBreakpoint) {
     margin: 65px 0;
   }
@@ -651,15 +652,13 @@ h4, h5, h6 {
       padding-left: @sidebarWidth;
     }
     .app-bar {
-      height: 45px;
+      height: @appBarHeight;
       background-color: #FFF;
       box-shadow: 0 0 50px 20px rgba(0, 0, 0, 0.04);
-      .column {
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       .sidebar-toggle {
         width: 20px;
         height: 20px;
@@ -668,11 +667,12 @@ h4, h5, h6 {
           display: none;
         }
       }
-      .left-section {
-        padding-top: 0;
-        padding-bottom: 0;
+      & > .left-section {
         align-items: left;
+        width: 250px;
+        padding: 0 10px;
         @media only screen and (max-width: @largestTabletScreen) {
+          width: @appBarHeight;
           .active-address-select {
             display: none;
           }
@@ -681,9 +681,14 @@ h4, h5, h6 {
           font-size: 17px;
         }
       }
-      .column.middle-section {
+      & > .middle-section {
         border-left: 1px solid fade(@lightBrown, 15);
+        height: 100%;
         display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        text-align: center;
         .app-bar-search-container {
           position: relative;
           width: 65%;
@@ -700,23 +705,35 @@ h4, h5, h6 {
             width: 20px;
             cursor: pointer;
           }
-          input {
-            background-color: #eef0f9;
-            border-radius: 15px;
-            padding: 4px 30px 4px 15px;
+          .ui.input {
             width: 100%;
-            border: none;
-            transition: background-color .2s ease-in;
-            &:focus {
-              background-color: darken(#eef0f9, 2);
+            input {
+              background-color: #eef0f9;
+              border-radius: 15px;
+              padding: 4px 30px 4px 15px;
+              width: 100%;
+              border: none;
+              transition: background-color .2s ease-in;
+              &:focus {
+                background-color: darken(#eef0f9, 2);
+              }
             }
           }
         }
       }
-      .right-section {
+      & > .right-section {
+        @media only screen and (max-width: @largestTabletScreen) {
+          display: none;
+        }
         background-color: @purple;
-        color: #FFF;
+        color: @whiteTextColor;
+        cursor: pointer;
+        transition: width 100ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+        width: @transactionLogWidth;
         height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         .active-address-balance {
           font-size: 18px;
         }
@@ -732,6 +749,12 @@ h4, h5, h6 {
         &.buy-now-offering > .grid {
           height: 110px;
         }
+
+        & > .ui.grid .column {
+          padding-top: 15px;
+          padding-bottom: 15px;
+        }
+
         .offering-stat {
           display: flex;
           flex-direction: column;
@@ -920,6 +943,15 @@ h4, h5, h6 {
     @media only screen and (max-width: @largestMobileScreen) {
       padding: @segmentGutterMobile;
     }
+    &.horizontally {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    &.vertically {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
     &.ui.header:not(.sub) {
       padding-bottom: 0;
       margin-bottom: 0;
@@ -1041,9 +1073,18 @@ h4, h5, h6 {
   & > .row.hide-divider, & > .row > .column.hide-divider {
     box-shadow: none !important;
   }
+  &.join-upper {
+    padding-top: 0 !important;
+  }
+  &.join-lower {
+    padding-bottom: 0 !important;
+  }
   & > .row, & > .row > .column, & > .column  {
     &.join-upper {
       padding-top: 0 !important;
+    }
+    &.join-lower {
+      padding-bottom: 0 !important;
     }
     &.mobile-join-upper {
       @media only screen and (max-width: @largestMobileScreen) {
@@ -1052,15 +1093,15 @@ h4, h5, h6 {
     }
   }
   &.no-inner-horizontal-padding {
-    & > .row > .column {
-      padding-left: 0;
-      padding-right: 0;
+    & > .column, & > .row > .column {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
     }
   }
   &.mobile-inner-vertical-padding {
     @media only screen and (max-width: @largestMobileScreen) {
-      & > .row > .column {
-        padding-bottom: @segmentGutterMobile;
+      & > .column, & > .row > .column {
+        padding-bottom: @segmentGutterMobile !important;
       }
     }
   }
@@ -1292,5 +1333,179 @@ input[type="range"] {
   }
   .react-datepicker__triangle {
     border-bottom-color: @brown !important;
+  }
+}
+
+.transaction-log-sticky {
+  & > * {
+    z-index: 9999;
+  }
+}
+
+.transaction-log-icon {
+  width: 25px;
+  height: 25px;
+  background-image: url(../images/transactions-icon.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin-left: 10px;
+}
+
+.transaction-log {
+  height: 0;
+  position: absolute;
+  //top: @appBarHeight;
+  right: 0;
+  z-index: 99;
+  width: @transactionLogWidth;
+  overflow: hidden;
+  background: #FFF;
+  color: @textColor;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 50px 20px rgba(0, 0, 0, 0.04);
+  will-change: height;
+  transition: height 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+
+  &.open {
+    height: @transactionLogHeight;
+  }
+
+  .title {
+    background: @purple;
+    color: fade(@whiteTextColor, 60);
+    text-transform: uppercase;
+    font-size: 10px;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+  }
+  .settings {
+    padding: 10px 25px;
+    border-bottom: 1px solid @borderColor;
+    .ui.checkbox label {
+      font-size: 10px;
+    }
+  }
+  .left-section {
+    color: @darkBlueText;
+    line-height: 1.5;
+    font-size: 12px;
+  }
+  .transactions {
+    overflow-y: scroll;
+    flex-grow: 1;
+    width: @transactionLogWidth + 10px;
+    .transaction {
+      margin: 10px 17px;
+      padding-bottom: 10px;
+      cursor: pointer;
+      &:not(:last-child) {
+        border-bottom: 1px solid @borderColor;
+      }
+      .transaction-name {
+        line-height: 1.6;
+        width: 100%;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .transaction-content {
+        display: flex;
+        .left-section {
+          flex-grow: 1;
+        }
+        .right-section {
+          width: 60px;
+          text-align: center;
+          align-self: center;
+        }
+        .transaction-status {
+          text-transform: uppercase;
+          font-size: 10px;
+          font-weight: bold;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          height: 45px;
+          .transaction-status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+          &.success {
+            color: @transactionSuccessColor;
+            .transaction-status-icon {
+              background-color: @transactionSuccessColor;
+              background-image: url(../images/check-icon-white.png);
+              background-size: auto 8px;
+            }
+          }
+          &.failure {
+             color: @transactionFailureColor;
+            .transaction-status-icon {
+              background-color: @transactionFailureColor;
+              background-image: url(../images/tx-failed-icon.png);
+              background-size: auto 7px;
+            }
+          }
+          &.pending, &.not-loaded {
+            color: @transactionPendingColor;
+            .transaction-status-icon {
+              background-color: @transactionPendingColor;
+              background-image: url(../images/tx-pending-icon.png);
+              background-size: auto 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .no-transactions {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: @grey;
+  }
+}
+
+
+.snackbar {
+  position: fixed;
+  background-color: @brownBackground;
+  bottom: 0;
+  right: 30px;
+  color: @whiteTextColor;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  background-size: 100% auto;
+  transition: height 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+  height: 0;
+  will-change: height;
+  overflow: hidden;
+  &.open {
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  @media only screen and (max-width: @largestMobileScreen) {
+    left: 0;
+    right: 0;
+  }
+  .snackbar-message {
+    font-size: 15px;
+  }
+  .ui.button {
+    margin-left: 20px;
+    white-space: nowrap;
   }
 }

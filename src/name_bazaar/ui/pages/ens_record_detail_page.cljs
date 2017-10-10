@@ -18,6 +18,7 @@
         [offerings-order-by-select
          {:order-by-column (first (:order-by-columns params))
           :order-by-dir (first (:order-by-dirs params))
+          :fluid true
           :options [:offering.order-by/newest
                     :offering.order-by/most-expensive
                     :offering.order-by/cheapest]
@@ -34,8 +35,17 @@
             {:keys [:items :loading? :params :total-count]} @search-results]
         [ui/Segment
          [:h1.ui.header.padded name " Offerings"]
+         [ui/Grid
+          {:padded true
+           :class "no-inner-horizontal-padding mobile-inner-vertical-padding join-lower"}
+          [ui/GridColumn
+           {:computer 6
+            :tablet 8
+            :mobile 16
+            :floated :right}
+           [ens-record-offerings-order-by-select-field]]]
          [offering-infinite-list
-          {:class "primary"
+          {:class "secondary"
            :total-count total-count
            :offset (:offset params)
            :loading? loading?
