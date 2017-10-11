@@ -53,6 +53,7 @@
 //@solidInternalBorderColor: fade(@lightBrown, 15);
 @borderColor: fade(@lightBrown, 15);
 @focusedFormMutedBorderColor: @borderColor;
+@internalBorderColor: @borderColor;
 @inputBorderColor: fade(@lightBrown, 30);
 @inputBorder: 1px solid @inputBorderColor;
 @focusedFormBorderColor: @brown;
@@ -60,9 +61,11 @@
 
 @appBarHeight: 45px;
 @transactionLogWidth: 300px;
-@transactionLogHeight: 424px;
-@snackbarHeight: 48px;
+@transactionLogHeight: 383px;
+
 
 @transactionSuccessColor: #5edb0b;
 @transactionPendingColor: #f5cb07;
 @transactionFailureColor: #ff0000;
+
+@floatingShadow: 2px 2px 20px 4px rgba(0,0,0,.05);

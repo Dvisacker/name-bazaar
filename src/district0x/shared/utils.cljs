@@ -199,3 +199,6 @@
         (str (string/join (take n (repeat "0"))))
         (str "0x"))
       address)))
+
+(defn calculate-gas-cost [gas gas-price conversion-rate]
+  (* (wei->eth (* gas gas-price)) conversion-rate))

@@ -11,8 +11,9 @@
    :screen-size (get-screen-size js/window.innerWidth)
    :ui-disabled? false
    :snackbar {:open? false
-              :message "Hello this is message Hello this is message Hello this is message"
-              :action-href "#/abc"}
+              :message ""
+              :action-href nil
+              :timeout 6000}
    :smart-contracts {}
    :my-addresses []
    :active-address nil

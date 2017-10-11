@@ -39,7 +39,8 @@
                     :forward-events {:register :active-page-changed
                                      :events #{:district0x/set-active-page}
                                      :dispatch-to [:active-page-changed]}
-                    :dispatch [:setup-update-now-interval]}}])
+                    :dispatch-n [[:setup-update-now-interval]
+                                 [:district0x/load-conversion-rates [:USD]]]}}])
   (set! (.-onhashchange js/window)
         #(dispatch [:district0x/set-active-page (d0x-ui-utils/match-current-location constants/routes)]))
   (mount-root))

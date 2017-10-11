@@ -7,3 +7,4 @@
 @invertedTextColor: @whiteTextColor;
 @medium: @small;
 @primaryTextColor: @textColor;
+@small: 12px;

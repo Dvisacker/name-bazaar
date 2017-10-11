@@ -3,13 +3,13 @@
 (def smart-contracts 
 {:auction-offering-factory
  {:name "AuctionOfferingFactory",
-  :address "0xde069c46fca418383684e78ee248949bbd9bbd94"},
+  :address "0x657357135261bb87b5ebe8008c7223a1129c7c78"},
  :buy-now-offering-library
  {:name "BuyNowOfferingLibrary",
-  :address "0x229314d77dc7e237387bd9b87cecd0e17d9429a2"},
+  :address "0xad20b3ce7b08b6e3be73d7d5b96b30d331979903"},
  :buy-now-offering-factory
  {:name "BuyNowOfferingFactory",
-  :address "0x8a508e1397e09461f522c733f038a5742f7b7f81"},
+  :address "0xa8a6d5ee15ca54683b232831a11970978c07afb6"},
  :registrar
  {:name "Registrar",
   :address "0x542d337975c2f9b436621024df371244bd53a0af"},
@@ -18,26 +18,26 @@
   :address "0x0000000000000000000000000000000000000000"},
  :auction-offering-library
  {:name "AuctionOfferingLibrary",
-  :address "0xaf5b2536b38d1d825da7f7f6de71a778e8ceb72f"},
+  :address "0x2d0a7d7f9aef0300e8725ff265e388a5e1d45631"},
  :deed
  {:name "Deed", :address "0x0000000000000000000000000000000000000000"},
  :ens
- {:name "ENS", :address "0x8b86a205f88554683ae0dec4ee9aa67d13182578"},
+ {:name "ENS", :address "0x48e8b808d63f8446dfcf30f785654dc310916509"},
  :mock-registrar
  {:name "MockRegistrar",
-  :address "0x076380d337043a69e7e7e9ee3669e972cc2021ce"},
+  :address "0x05b86cfd36810182a8ab9c50e056040694f27575"},
  :offering-registry
  {:name "OfferingRegistry",
-  :address "0x433dd77c06ab2e55f01fe860566218f6bfb37f57"},
+  :address "0xabab3ed540bdf4003c9f82e7d725f36c5cda7e0f"},
  :district0x-emails
  {:name "District0xEmails",
-  :address "0xcf311129c011f93e027108933c8e23d2f0d313e4"},
+  :address "0x380c73c75069258e19845cb40870d21058c1f6c0"},
  :offering-requests
  {:name "OfferingRequests",
-  :address "0x829b954963f46f404b82351c794cc63f8c037c47"},
+  :address "0xaccd5d50f5700c929070d868fae7759212a4cbb5"},
  :offering-library
  {:name "OfferingLibrary",
-  :address "0x415cc1a7f3ab605e90780ac74df3fa840fc69662"},
+  :address "0xbd63bddd4a149dd6285a4e5334fa9bfbeea3a85e"},
  :auction-offering
  {:name "AuctionOffering",
   :address "0x0000000000000000000000000000000000000000"}})

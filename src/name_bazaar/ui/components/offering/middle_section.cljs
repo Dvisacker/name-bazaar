@@ -5,7 +5,7 @@
     [district0x.ui.components.misc :as d0x-misc :refer [page]]
     [district0x.ui.components.transaction-button :refer [transaction-button]]
     [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code]]
-    [name-bazaar.shared.utils :refer [name-label]]
+    [name-bazaar.shared.utils :refer [name-label emergency-state-new-owner]]
     [name-bazaar.ui.components.offering.auction-finalize-button :refer [auction-finalize-button]]
     [name-bazaar.ui.utils :refer [namehash sha3 path-for]]
     [re-frame.core :refer [subscribe dispatch]]
@@ -78,12 +78,19 @@
      [:b "WARNING:"] " This is not top level name. Beware, that owner of " parent-name " will be always able to take this "
      "name back. Buy only when you trust a owner of " parent-name "."]))
 
+(defn emergency-cancel-info []
+  [:div.description.warning
+   "This offering was cancelled by Name Bazaar emergency wallet, because of potential security risks. "
+   "The contract won't be usable anymore."])
+
 (defn offering-middle-section [{:keys [:offering]}]
-  (let [{:keys [:offering/address :offering/contains-non-ascii? :offering/auction? :offering/top-level-name?]} offering
+  (let [{:keys [:offering/address :offering/contains-non-ascii? :offering/auction? :offering/top-level-name?
+                :offering/new-owner]} offering
         missing-ownership? @(subscribe [:offering/missing-ownership? address])
         active-address-owner? @(subscribe [:offering/active-address-original-owner? address])
-        show-auction-bid-info? (and auction? (not active-address-owner?))]
-    (when (or show-auction-bid-info? missing-ownership? (not top-level-name?) contains-non-ascii?)
+        show-auction-bid-info? (and auction? (not active-address-owner?))
+        emergency-cancel? (= new-owner emergency-state-new-owner)]
+    (when (or show-auction-bid-info? missing-ownership? (not top-level-name?) contains-non-ascii? emergency-cancel?)
       [ui/GridColumn
        {:text-align :center
         :computer 10
@@ -102,4 +109,7 @@
 
        (when show-auction-bid-info?
          [auction-bid-info
-          {:offering offering}])])))
+          {:offering offering}])
+
+       (when emergency-cancel?
+         [emergency-cancel-info])])))

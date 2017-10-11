@@ -98,8 +98,7 @@
   :registrar-entry.deed.owner/loaded
   interceptors
   (fn [{:keys [:db]} [label-hash deed-owner]]
-    {:db (assoc-in db [:registrar/entries label-hash :registrar.entry.deed/owner]
-                   (when-not (empty-address? deed-owner) deed-owner))}))
+    {:db (assoc-in db [:registrar/entries label-hash :registrar.entry.deed/owner] deed-owner)}))
 
 
 

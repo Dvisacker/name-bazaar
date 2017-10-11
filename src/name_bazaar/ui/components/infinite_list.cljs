@@ -26,7 +26,7 @@
       (into
         [:div.header
          {:style {:height collapsed-height}
-          :on-click (fn []
+          :on-click (fn [e]
                       (when (fn? on-click)
                         (on-click index))
                       (when-not disable-expand?

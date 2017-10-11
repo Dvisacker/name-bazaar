@@ -147,7 +147,7 @@
           (doall
             (for [[i offering] (medley/indexed items)]
               [offering-list-item
-               {:key i
+               {:key (inc i)
                 :offering offering}]))]]))))
 
 (defmethod page :route.offerings/detail []

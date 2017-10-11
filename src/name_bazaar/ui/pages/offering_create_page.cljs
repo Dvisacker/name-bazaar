@@ -119,14 +119,15 @@
       {:show-time-select true
        :time-intervals 15
        :date-format "LLLL"
-       :should-close-on-select false}
+       :should-close-on-select false
+       :min-date (js/moment)}
       props)]])
 
 (defn- form-data->transaction-data [{:keys [:offering/type] :as offering}]
   (let [auction? (= type :auction-offering)]
     (cond-> offering
       true (update :offering/name str constants/registrar-root)
-      auction? (update :auction-offering/end-time (comp from-date #(.toDate %)))
+      auction? (update :auction-offering/end-time (comp from-date #(.toDate (js/moment %))))
 
       #_auction? #_(assoc :auction-offering/end-time
                      (date+time->local-date-time (:auction-offering.end-time/date offering)

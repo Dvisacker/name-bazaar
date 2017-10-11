@@ -120,7 +120,7 @@
   :auction-offering/bid
   [interceptors (validate-first-arg (s/keys :req [:offering/address :offering/price]))]
   (fn [{:keys [:db]} [form-data]]
-    (let [offering-name (gstring/format "Bid for %s" (get-offering-name db (:offering/address form-data)))]
+    (let [offering-name (get-offering-name db (:offering/address form-data))]
       {:dispatch [:district0x/make-transaction
                   {:name offering-name
                    :contract-key :auction-offering

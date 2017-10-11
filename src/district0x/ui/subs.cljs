@@ -4,7 +4,8 @@
     [cljs-time.coerce :refer [from-long]]
     [cljs-time.core :as t]
     [cljs-web3.core :as web3]
-    [district0x.ui.utils :as d0x-ui-utils]
+    [district0x.shared.utils :refer [calculate-gas-cost]]
+    [district0x.ui.utils :as d0x-ui-utils :refer [to-locale-string]]
     [goog.string :as gstring]
     [goog.string.format]
     [medley.core :as medley]
@@ -70,6 +71,12 @@
   :district0x/conversion-rates
   (fn [db]
     (:conversion-rates db)))
+
+(reg-sub
+  :district0x/conversion-rate
+  :<- [:district0x/conversion-rates]
+  (fn [conversion-rates [_ currency]]
+    (get conversion-rates currency)))
 
 (reg-sub
   :district0x/smart-contracts

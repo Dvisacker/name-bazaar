@@ -43,6 +43,7 @@
          {:disable-expand? true
           :collapsed-height (constants/infinite-list-collapsed-item-height @mobile?)}
          [:div.ui.grid.padded.search-results-list-item
+          {:class (when @mobile? "mobile")}
           [ui/GridRow
            {:class "search-results-list-item-header opacity-1"
             :vertical-align :middle}
@@ -59,7 +60,7 @@
        [infinite-list
         {:collapsed-item-height (constants/infinite-list-collapsed-item-height @mobile?)
          :total-count (count @watched-items)
-         :no-items-element (r/as-element [:div "You are not watching any names"])}
+         :no-items-element (r/as-element [:div.no-items-text "You are not watching any names"])}
         (doall
           (for [{:keys [:ens.record/node] :as watched-item} @watched-items]
             (cond

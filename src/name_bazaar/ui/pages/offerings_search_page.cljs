@@ -220,7 +220,7 @@
           [offerings-keyword-text-field]]
          (when @mobile?
            [ui/GridColumn
-            {:class :join-upper
+            {:class "join-upper hide-divider"
              :mobile 16}
             [:div.offerings-search-options-section
              [order-by-select-field]
@@ -289,7 +289,8 @@
            [ui/GridColumn
             {:computer 8
              :tablet 8
-             :mobile 16}
+             :mobile 16
+             :class :mobile-hide-divider}
             [:div.offerings-search-options-section
              [ui/Grid
               [ui/GridColumn
@@ -344,7 +345,7 @@
           (doall
             (for [[i offering] (medley/indexed items)]
               [offering-list-item
-               {:key i
+               {:key (inc i)
                 :offering offering}]))]]))))
 
 (defmethod page :route.offerings/search []

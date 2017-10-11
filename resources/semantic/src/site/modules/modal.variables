@@ -3,7 +3,7 @@
 *******************************/
 
 @borderRadius: @segmentBorderRadius;
-@boxShadow: 1px 1px 6px 3px rgba(0,0,0,.05);
+@boxShadow: @floatingShadow;
 @headerBorder: none;
 @headerFontWeight: normal;
 @headerColor: @textColor;

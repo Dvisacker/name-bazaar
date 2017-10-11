@@ -19,26 +19,27 @@
         single-address? (subscribe [:district0x.my-addresses/single-address?])]
     (fn [{:keys [:container-props :from-active-address-only-toggle-props]}]
       (let [{:keys [:from-active-address-only?]} @settings]
-        [:div.settings
-         container-props
-         (when-not @single-address?
+        (when-not @single-address?
+          [:div.settings
+           container-props
            [ui/Checkbox
             (r/merge-props
               {:toggle true
                :label "Show transactions from active address only."
                :on-change #(dispatch [:district0x.transaction-log.settings/set :from-active-address-only? (aget %2 "checked")])
                :checked from-active-address-only?}
-              from-active-address-only-toggle-props)])]))))
+              from-active-address-only-toggle-props)]])))))
 
 (defn transaction-time-ago [{{:keys [:created-on]} :transaction}]
   [:div.transaction-time-ago
    "Sent " (time-ago created-on)])
 
-(defn transaction-gas [{{:keys [:status :gas :gas-used :gas-used-cost]} :transaction}]
+(defn transaction-gas [{{:keys [:status :gas :gas-used :gas-used-cost-usd]} :transaction}]
   [:div.transaction-gas
    (cond
      (contains? #{:tx.status/success :tx.status/failure} status)
-     (str "Gas used: " (to-locale-string gas-used 0) (when gas-used-cost "($" gas-used-cost ")"))
+     (str "Gas used: " (to-locale-string gas-used 0) (when gas-used-cost-usd
+                                                       (str " ($" (to-locale-string gas-used-cost-usd 2) ")")))
 
      gas
      (str "Gas limit: " gas)

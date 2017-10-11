@@ -59,9 +59,10 @@
    "(" (time-ago finalized-on) ")"])
 
 (defn offering-name-line [{:keys [:offering/name]}]
-  [:div "Name: " [:a
-                  {:href (path-for :route.ens-record/detail {:ens.record/name name})}
-                  name]])
+  [:div "Name: " (when name
+                   [:a
+                    {:href (path-for :route.ens-record/detail {:ens.record/name name})}
+                    name])])
 
 (defn offering-auction-end-time-line [{:keys [:offering]}]
   (let [{:keys [:offering/address :auction-offering/end-time]} offering

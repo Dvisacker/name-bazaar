@@ -11,13 +11,14 @@
     [soda-ash.core :as ui]))
 
 (defn offering-request-list-item-header []
-  (let [visible? (r/atom false)]
+  (let [visible? (r/atom false)
+        mobile? (subscribe [:district0x.screen-size/mobile?])]
     (fn [{:keys [:offering-request]}]
       (let [{:keys [:offering-request/node :offering-request/name :offering-request/requesters-count]} offering-request]
         [:div.ui.grid.padded.search-results-list-item.offering-request
+         {:class (when @mobile? "mobile")}
          (if-not node
-           [list-item-placeholder
-            {:class "short"}]
+           [list-item-placeholder]
            [ui/GridRow
             {:class (str "search-results-list-item-header "
                          (when @visible? "opacity-1"))

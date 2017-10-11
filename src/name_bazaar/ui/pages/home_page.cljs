@@ -60,7 +60,7 @@
    (doall
      (for [[i offering] (medley/indexed offerings)]
        [offering-list-item
-        {:key i
+        {:key (inc i)
          :offering offering
          :disable-expand? true
          :mobile? true
@@ -111,20 +111,25 @@
     :centered true
     :class :app-page-link-grid}
    [ui/GridColumn
-    {:widescreen 3
-     :large-screen 5
-     :computer 6
-     :tablet 7
+    {:widescreen 5
+     :large-screen 8
+     :computer 9
+     :tablet 12
      :mobile 16
      :text-align "center"}
-    [:a.ui.button.app-page-button-link
-     {:href (path-for :route.offerings/search)}
-     "View Offerings"
-     [:span.button-icon.view-offerings]]
-    [:a.ui.button.app-page-button-link
-     {:href (path-for :route.offerings/create)}
-     "Create Offering"
-     [:span.button-icon.create-offering]]]])
+    [:div.app-page-button-links
+     [:a.ui.button.app-page-button-link
+      {:href (path-for :route.offerings/search)}
+      "View Offerings"
+      [:span.button-icon.view-offerings]]
+     [:a.ui.button.app-page-button-link
+      {:href (path-for :route.offerings/create)}
+      "Create Offering"
+      [:span.button-icon.create-offering]]
+     [:a.ui.button.app-page-button-link
+      {:href (path-for :route/how-it-works)}
+      "How It Works"
+      [:span.button-icon.how-it-works]]]]])
 
 (defn app-headline []
   [ui/Grid
@@ -160,12 +165,11 @@
         {:columns 1
          :centered true}
         [ui/GridColumn
-         {:widescreen 8
-          :large-screen 11
+         {:widescreen 7
+          :large-screen 9
           :computer 12
           :tablet 12
-          :mobile 15
-          :text-align :center}
+          :mobile 15}
          [search-bar]]]
        [app-pages]
        [offerings-columns]

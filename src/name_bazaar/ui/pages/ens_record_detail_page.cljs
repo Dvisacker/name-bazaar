@@ -56,7 +56,7 @@
           (doall
             (for [[i offering] (medley/indexed items)]
               [offering-list-item
-               {:key i
+               {:key (inc i)
                 :offering offering
                 :header-props {:show-created-on? true
                                :show-sold? true

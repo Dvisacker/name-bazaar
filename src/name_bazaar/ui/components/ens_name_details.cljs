@@ -47,7 +47,7 @@
       :tablet 8
       :text-align :right
       :mobile 16}
-     [:div.description
+     [:div.description.links-section
       (when show-name-detail-link?
         [name-detail-link
          {:ens.record/name name}])

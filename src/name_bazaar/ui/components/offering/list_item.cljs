@@ -4,6 +4,7 @@
     [clojure.string :as string]
     [district0x.shared.utils :refer [empty-address?]]
     [district0x.ui.utils :as d0x-ui-utils :refer [format-eth-with-code format-local-datetime time-ago time-remaining-biggest-unit time-unit->text pluralize time-unit->short-text]]
+    [name-bazaar.shared.utils :refer [emergency-state-new-owner]]
     [name-bazaar.ui.components.add-to-watched-names-button :refer [add-to-watched-names-button]]
     [name-bazaar.ui.components.ens-record.etherscan-link :refer [ens-record-etherscan-link]]
     [name-bazaar.ui.components.infinite-list :refer [expandable-list-item]]
@@ -91,8 +92,10 @@
      "Ownership"]))
 
 (defn offering-header-sold-tag [{:keys [:offering] :as props}]
-  (when-not (empty? (:offering/new-owner offering))
-    [offering-sold-tag]))
+  (let [{:keys [:offering/new-owner]} offering]
+    (when (and (not (empty? new-owner))
+               (not= emergency-state-new-owner new-owner))
+      [offering-sold-tag])))
 
 (defn offering-header-offering-type [{:keys [:offering]}]
   (let [offering-type (:offering/type offering)]
